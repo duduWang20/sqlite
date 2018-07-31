@@ -9507,9 +9507,7 @@ static int btreeHeapPull(u32 *aHeap, u32 *pOut){
 ** Do various sanity checks on a single page of a tree.  Return
 ** the tree depth.  Root pages return 0.  Parents of root pages
 ** return 1, and so forth.
-** 
 ** These checks are done:
-**
 **      1.  Make sure that cells and freeblocks do not overlap
 **          but combine to completely cover the page.
 **      2.  Make sure integer cell keys are in order.

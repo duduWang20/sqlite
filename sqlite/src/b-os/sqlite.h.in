@@ -1158,13 +1158,15 @@ typedef struct sqlite3_mutex sqlite3_mutex;
 */
 typedef struct sqlite3_api_routines sqlite3_api_routines;
 
+
+
 /*
 ** CAPI3REF: OS Interface Object
 **
 ** An instance of the sqlite3_vfs object defines the interface between
-** the SQLite core and the underlying operating system.  The "vfs"
-** in the name of the object stands for "virtual file system".  See
-** the [VFS | VFS documentation] for further information.
+** the SQLite core and the underlying operating system.
+** The "vfs" in the name of the object stands for "virtual file system".
+** See the [VFS | VFS documentation] for further information.
 **
 ** The VFS interface is sometimes extended by adding new methods onto
 ** the end.  Each time such an extension occurs, the iVersion field

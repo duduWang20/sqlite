@@ -1,15 +1,4 @@
 /*
-** 2007 August 27
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-*************************************************************************
-**
 ** This file contains code used to implement mutexes on Btree objects.
 ** This code really belongs in btree.c.  But btree.c is getting too
 ** big and we want to break it down some.  This packaged seemed like
@@ -18,7 +7,6 @@
 #include "btreeInt.h"
 #ifndef SQLITE_OMIT_SHARED_CACHE
 #if SQLITE_THREADSAFE
-
 /*
 ** Obtain the BtShared mutex associated with B-Tree handle p. Also,
 ** set BtShared.db to the database handle associated with p and the
@@ -28,12 +16,10 @@ static void lockBtreeMutex(Btree *p){
   assert( p->locked==0 );
   assert( sqlite3_mutex_notheld(p->pBt->mutex) );
   assert( sqlite3_mutex_held(p->db->mutex) );
-
   sqlite3_mutex_enter(p->pBt->mutex);
   p->pBt->db = p->db;
   p->locked = 1;
 }
-
 /*
 ** Release the BtShared mutex associated with B-Tree handle p and
 ** clear the p->locked boolean.
@@ -44,7 +30,6 @@ static void SQLITE_NOINLINE unlockBtreeMutex(Btree *p){
   assert( sqlite3_mutex_held(pBt->mutex) );
   assert( sqlite3_mutex_held(p->db->mutex) );
   assert( p->db==pBt->db );
-
   sqlite3_mutex_leave(pBt->mutex);
   p->locked = 0;
 }
@@ -306,3 +291,4 @@ void sqlite3BtreeLeaveCursor(BtCursor *pCur){
 #endif /* ifndef SQLITE_OMIT_INCRBLOB */
 
 #endif /* ifndef SQLITE_OMIT_SHARED_CACHE */
+

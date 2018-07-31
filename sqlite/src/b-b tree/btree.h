@@ -1,4 +1,14 @@
 /*
+** 2001 September 15
+**
+** The author disclaims copyright to this source code.  In place of
+** a legal notice, here is a blessing:
+**
+**    May you do good and not evil.
+**    May you find forgiveness for yourself and forgive others.
+**    May you share freely, never taking more than you give.
+**
+*************************************************************************
 ** This header file defines the interface that the sqlite B-Tree file
 ** subsystem.  See comments in the source code for a detailed description
 ** of what each interface routine does.
@@ -18,6 +28,7 @@
 #ifndef SQLITE_DEFAULT_AUTOVACUUM
   #define SQLITE_DEFAULT_AUTOVACUUM 0
 #endif
+
 #define BTREE_AUTOVACUUM_NONE 0        /* Do not do auto-vacuum */
 #define BTREE_AUTOVACUUM_FULL 1        /* Do full auto-vacuum */
 #define BTREE_AUTOVACUUM_INCR 2        /* Incremental vacuum */
@@ -361,22 +372,21 @@ void sqlite3BtreeCursorList(Btree*);
   void sqlite3BtreeLeave(Btree*);
   void sqlite3BtreeLeaveCursor(BtCursor*);
   void sqlite3BtreeLeaveAll(sqlite3*);
-#ifndef NDEBUG
-  /* These routines are used inside assert() statements only. */
-  int sqlite3BtreeHoldsMutex(Btree*);
-  int sqlite3BtreeHoldsAllMutexes(sqlite3*);
-  int sqlite3SchemaMutexHeld(sqlite3*,int,Schema*);
-#endif
+    #ifndef NDEBUG
+      /* These routines are used inside assert() statements only. */
+      int sqlite3BtreeHoldsMutex(Btree*);
+      int sqlite3BtreeHoldsAllMutexes(sqlite3*);
+      int sqlite3SchemaMutexHeld(sqlite3*,int,Schema*);
+    #endif
 #else
+    # define sqlite3BtreeLeave(X)
+    # define sqlite3BtreeLeaveCursor(X)
+    # define sqlite3BtreeLeaveAll(X)
 
-# define sqlite3BtreeLeave(X)
-# define sqlite3BtreeLeaveCursor(X)
-# define sqlite3BtreeLeaveAll(X)
-
-# define sqlite3BtreeHoldsMutex(X) 1
-# define sqlite3BtreeHoldsAllMutexes(X) 1
-# define sqlite3SchemaMutexHeld(X,Y,Z) 1
+    # define sqlite3BtreeHoldsMutex(X) 1
+    # define sqlite3BtreeHoldsAllMutexes(X) 1
+    # define sqlite3SchemaMutexHeld(X,Y,Z) 1
 #endif
-
 
 #endif /* SQLITE_BTREE_H */
+

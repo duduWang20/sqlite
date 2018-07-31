@@ -3462,6 +3462,8 @@
 		D5D091A5210F07CF005F1DA6 /* mptest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mptest.c; sourceTree = "<group>"; };
 		D5D091A6210F07CF005F1DA6 /* config02.test */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config02.test; sourceTree = "<group>"; };
 		D5D091A7210F07CF005F1DA6 /* crash01.test */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = crash01.test; sourceTree = "<group>"; };
+		D5D09859210FFC2E005F1DA6 /* btree-doc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "btree-doc.h"; sourceTree = "<group>"; };
+		D5D098612110672F005F1DA6 /* btree-check.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "btree-check.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4690,7 +4692,7 @@
 				D5D09850210F0FAA005F1DA6 /* tools */,
 				D5D0984D210F0ED3005F1DA6 /* core-interface */,
 				D5D0984E210F0EE0005F1DA6 /* core-parser */,
-				D5D0984F210F0EF1005F1DA6 /* core-vm */,
+				D5D0984F210F0EF1005F1DA6 /* core-vm-step */,
 				D5D0984B210F0E83005F1DA6 /* b-b tree */,
 				D5D0984C210F0EAC005F1DA6 /* b-pager */,
 				D5D0984A210F0E4F005F1DA6 /* b-os */,
@@ -5405,6 +5407,12 @@
 		D5D0984A210F0E4F005F1DA6 /* b-os */ = {
 			isa = PBXGroup;
 			children = (
+				D5D08FB2210F07BE005F1DA6 /* test_vfstrace.c */,
+				D5D08F4F210F07BE005F1DA6 /* test_quota.h */,
+				D5D08F31210F07BD005F1DA6 /* test_multiplex.c */,
+				D5D08F85210F07BE005F1DA6 /* test_multiplex.h */,
+				D5D08F8F210F07BE005F1DA6 /* test_quota.c */,
+				D5D08FA8210F07BE005F1DA6 /* test_vfs.c */,
 				D5D08F86210F07BE005F1DA6 /* sqlite.h.in */,
 				D5D08FA2210F07BE005F1DA6 /* test_osinst.c */,
 				D5D08F74210F07BE005F1DA6 /* test_window.c */,
@@ -5423,11 +5431,14 @@
 		D5D0984B210F0E83005F1DA6 /* b-b tree */ = {
 			isa = PBXGroup;
 			children = (
+				D5D08F9A210F07BE005F1DA6 /* btmutex.c */,
 				D5D08F58210F07BE005F1DA6 /* btreeInt.h */,
 				D5D08F84210F07BE005F1DA6 /* btree.h */,
 				D5D08F30210F07BD005F1DA6 /* btree.c */,
 				D5D08F51210F07BE005F1DA6 /* test_btree.c */,
 				D5D08F96210F07BE005F1DA6 /* test_rtree.c */,
+				D5D09859210FFC2E005F1DA6 /* btree-doc.h */,
+				D5D098612110672F005F1DA6 /* btree-check.h */,
 			);
 			path = "b-b tree";
 			sourceTree = "<group>";
@@ -5436,14 +5447,12 @@
 			isa = PBXGroup;
 			children = (
 				D5D09855210F24AF005F1DA6 /* log */,
-				D5D08FBC210F07BE005F1DA6 /* backup.c */,
-				D5D08FB6210F07BE005F1DA6 /* pager.h */,
-				D5D08F78210F07BE005F1DA6 /* pager.c */,
 				D5D08F73210F07BE005F1DA6 /* pcache.h */,
 				D5D08FC2210F07BE005F1DA6 /* pcache.c */,
 				D5D08F7E210F07BE005F1DA6 /* pcache1.c */,
 				D5D08F79210F07BE005F1DA6 /* test_pcache.c */,
-				D5D08FB2210F07BE005F1DA6 /* test_vfstrace.c */,
+				D5D08FB6210F07BE005F1DA6 /* pager.h */,
+				D5D08F78210F07BE005F1DA6 /* pager.c */,
 			);
 			path = "b-pager";
 			sourceTree = "<group>";
@@ -5487,7 +5496,7 @@
 			path = "core-parser";
 			sourceTree = "<group>";
 		};
-		D5D0984F210F0EF1005F1DA6 /* core-vm */ = {
+		D5D0984F210F0EF1005F1DA6 /* core-vm-step */ = {
 			isa = PBXGroup;
 			children = (
 				D5D08F75210F07BE005F1DA6 /* vdbeaux.c */,
@@ -5500,7 +5509,7 @@
 				D5D08F91210F07BE005F1DA6 /* vdbesort.c */,
 				D5D08FAA210F07BE005F1DA6 /* vdbe.c */,
 			);
-			path = "core-vm";
+			path = "core-vm-step";
 			sourceTree = "<group>";
 		};
 		D5D09850210F0FAA005F1DA6 /* tools */ = {
@@ -5557,7 +5566,6 @@
 			isa = PBXGroup;
 			children = (
 				D5D08F72210F07BE005F1DA6 /* test4.c */,
-				D5D08F4F210F07BE005F1DA6 /* test_quota.h */,
 				D5D08F81210F07BE005F1DA6 /* test_wsd.c */,
 				D5D08F88210F07BE005F1DA6 /* test_blob.c */,
 				D5D08F8C210F07BE005F1DA6 /* test_tclsh.c */,
@@ -5565,7 +5573,6 @@
 				D5D08F94210F07BE005F1DA6 /* test1.c */,
 				D5D08F33210F07BD005F1DA6 /* test_func.c */,
 				D5D08F2E210F07BD005F1DA6 /* test_init.c */,
-				D5D08F31210F07BD005F1DA6 /* test_multiplex.c */,
 				D5D08F39210F07BD005F1DA6 /* test_async.c */,
 				D5D08F3A210F07BE005F1DA6 /* test7.c */,
 				D5D08F3E210F07BE005F1DA6 /* test_hexio.c */,
@@ -5581,14 +5588,11 @@
 				D5D08F7A210F07BE005F1DA6 /* test_schema.c */,
 				D5D08F7C210F07BE005F1DA6 /* test_thread.c */,
 				D5D08F83210F07BE005F1DA6 /* test_bestindex.c */,
-				D5D08F85210F07BE005F1DA6 /* test_multiplex.h */,
 				D5D08F89210F07BE005F1DA6 /* test_autoext.c */,
 				D5D08F8E210F07BE005F1DA6 /* test_devsym.c */,
-				D5D08F8F210F07BE005F1DA6 /* test_quota.c */,
 				D5D08F90210F07BE005F1DA6 /* test_intarray.h */,
 				D5D08F9B210F07BE005F1DA6 /* test_demovfs.c */,
 				D5D08F9F210F07BE005F1DA6 /* test_onefile.c */,
-				D5D08FA8210F07BE005F1DA6 /* test_vfs.c */,
 				D5D08FB5210F07BE005F1DA6 /* test_loadext.c */,
 				D5D08FB7210F07BE005F1DA6 /* test_md5.c */,
 				D5D08FB8210F07BE005F1DA6 /* test6.c */,
@@ -5621,7 +5625,6 @@
 		D5D09854210F148D005F1DA6 /* mutex */ = {
 			isa = PBXGroup;
 			children = (
-				D5D08F9A210F07BE005F1DA6 /* btmutex.c */,
 				D5D08FBA210F07BE005F1DA6 /* notify.c */,
 				D5D08FBB210F07BE005F1DA6 /* mutex_w32.c */,
 				D5D08F60210F07BE005F1DA6 /* mutex.c */,
@@ -5635,6 +5638,7 @@
 		D5D09855210F24AF005F1DA6 /* log */ = {
 			isa = PBXGroup;
 			children = (
+				D5D08FBC210F07BE005F1DA6 /* backup.c */,
 				D5D08FC3210F07BE005F1DA6 /* wal.h */,
 				D5D08F6B210F07BE005F1DA6 /* wal.c */,
 				D5D08F46210F07BE005F1DA6 /* memjournal.c */,
