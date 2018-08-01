@@ -1,16 +1,6 @@
 /*
 ** 2008 December 3
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-*************************************************************************
-**
-** This module implements an object we call a "RowSet".
+ ** This module implements an object we call a "RowSet".
 **
 ** The RowSet object is a collection of rowids.  Rowids
 ** are inserted into the RowSet in an arbitrary order.  Inserts
@@ -23,16 +13,16 @@
 **
 ** Hence, the primitive operations for a RowSet are:
 **
-**    CREATE
+**    CREATE  DESTROY
 **    INSERT
 **    TEST
 **    SMALLEST
-**    DESTROY
-**
-** The CREATE and DESTROY primitives are the constructor and destructor,
-** obviously.  The INSERT primitive adds a new element to the RowSet.
-** TEST checks to see if an element is already in the RowSet.  SMALLEST
-** extracts the least value from the RowSet.
+**/
+
+/** The CREATE and DESTROY primitives are the constructor and destructor, obviously.
+** The INSERT primitive adds a new element to the RowSet.
+** TEST checks to see if an element is already in the RowSet.
+** SMALLEST extracts the least value from the RowSet.
 **
 ** The INSERT primitive might allocate additional memory.  Memory is
 ** allocated in chunks so most INSERTs do no allocation.  There is an 
@@ -63,24 +53,21 @@
 */
 #include "sqliteInt.h"
 
-
 /*
 ** Target size for allocation chunks.
 */
 #define ROWSET_ALLOCATION_SIZE 1024
-
 /*
 ** The number of rowset entries per allocation chunk.
 */
 #define ROWSET_ENTRY_PER_CHUNK  \
-                       ((ROWSET_ALLOCATION_SIZE-8)/sizeof(struct RowSetEntry))
+                       ((ROWSET_ALLOCATION_SIZE-8)/sizeof(struct RowSetEntry))  //120 +-
 
 /*
 ** Each entry in a RowSet is an instance of the following object.
-**
 ** This same object is reused to store a linked list of trees of RowSetEntry
-** objects.  In that alternative use, pRight points to the next entry
-** in the list, pLeft points to the tree, and v is unused.  The
+** objects.  In that alternative use, pRight points to the next entry in the list,
+**                                     pLeft points to the tree, and v is unused.  The
 ** RowSet.pForest value points to the head of this forest list.
 */
 struct RowSetEntry {            
@@ -88,7 +75,6 @@ struct RowSetEntry {
   struct RowSetEntry *pRight;   /* Right subtree (larger entries) or list */
   struct RowSetEntry *pLeft;    /* Left subtree (smaller entries) */
 };
-
 /*
 ** RowSetEntry objects are allocated in large chunks (instances of the
 ** following structure) to reduce memory allocation overhead.  The
@@ -99,10 +85,8 @@ struct RowSetChunk {
   struct RowSetChunk *pNextChunk;        /* Next chunk on list of them all */
   struct RowSetEntry aEntry[ROWSET_ENTRY_PER_CHUNK]; /* Allocated entries */
 };
-
 /*
 ** A RowSet in an instance of the following structure.
-**
 ** A typedef of this structure if found in sqliteInt.h.
 */
 struct RowSet {
@@ -169,7 +153,6 @@ void sqlite3RowSetClear(RowSet *p){
   p->pForest = 0;
   p->rsFlags = ROWSET_SORTED;
 }
-
 /*
 ** Allocate a new RowSetEntry object that is associated with the
 ** given RowSet.  Return a pointer to the new and completely uninitialized
@@ -196,7 +179,6 @@ static struct RowSetEntry *rowSetEntryAlloc(RowSet *p){
   p->nFresh--;
   return p->pFresh++;
 }
-
 /*
 ** Insert a new value into a RowSet.
 **
@@ -212,6 +194,7 @@ void sqlite3RowSetInsert(RowSet *p, i64 rowid){
 
   pEntry = rowSetEntryAlloc(p);
   if( pEntry==0 ) return;
+    
   pEntry->v = rowid;
   pEntry->pRight = 0;
   pLast = p->pLast;
@@ -227,7 +210,6 @@ void sqlite3RowSetInsert(RowSet *p, i64 rowid){
   }
   p->pLast = pEntry;
 }
-
 /*
 ** Merge two lists of RowSetEntry objects.  Remove duplicates.
 **

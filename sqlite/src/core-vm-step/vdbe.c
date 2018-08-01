@@ -1,22 +1,10 @@
-/*
-** 2001 September 15
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
+/* 2001 September 15
 *************************************************************************
-** The code in this file implements the function that runs the
-** bytecode of a prepared statement.
+** The code in this file implements ====== the function that runs the bytecode of a prepared statement.
 **
-** Various scripts scan this source file in order to generate HTML
-** documentation, headers files, or other derived files.  The formatting
-** of the code in this file is, therefore, important.  See other comments
-** in this file for details.  If in doubt, do not deviate from existing
-** commenting and indentation practices when changing or adding code.
+** Various scripts scan this source file in order to generate HTML documentation, headers files, or other derived files.
+** The formatting of the code in this file is, therefore, important.
+** See other comments in this file for details.  If in doubt, do not deviate from existing commenting and indentation practices when changing or adding code.
 */
 #include "sqliteInt.h"
 #include "vdbeInt.h"
@@ -591,14 +579,13 @@ static Mem *out2Prerelease(Vdbe *p, VdbeOp *pOp){
   }
 }
 
-
-/*
-** Execute as much of a VDBE program as we can.
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+//////wjf
+/* Execute as much of a VDBE program as we can.
 ** This is the core of sqlite3_step().  
 */
-int sqlite3VdbeExec(
-  Vdbe *p                    /* The VDBE */
-){
+int sqlite3VdbeExec(Vdbe *p ){                   /* The VDBE */
   Op *aOp = p->aOp;          /* Copy of p->aOp */
   Op *pOp = aOp;             /* Current operation */
 #if defined(SQLITE_DEBUG) || defined(VDBE_PROFILE)
@@ -5404,7 +5391,7 @@ case OP_IdxDelete: {
 ** See also: Rowid, MakeRecord.
 */
 case OP_DeferredSeek:
-case OP_IdxRowid: {           /* out2 */
+case OP_IdxRowid: {             /* out2 */
   VdbeCursor *pC;             /* The P1 index cursor */
   VdbeCursor *pTabCur;        /* The P2 table cursor (OP_DeferredSeek only) */
   i64 rowid;                  /* Rowid that P1 current points to */

@@ -1,19 +1,8 @@
-/*
-** 2001 September 15
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-*************************************************************************
+/* 2001 September 15
 ** Header file for the Virtual DataBase Engine (VDBE)
 **
-** This header defines the interface to the virtual database engine
-** or VDBE.  The VDBE implements an abstract machine that runs a
-** simple program to access and modify the underlying database.
+** This header defines the interface to the virtual database engine or VDBE.
+** The VDBE implements an abstract machine that runs a simple program to access and modify the underlying database.
 */
 #ifndef SQLITE_VDBE_H
 #define SQLITE_VDBE_H

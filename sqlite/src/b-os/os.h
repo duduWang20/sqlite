@@ -1,15 +1,5 @@
 /*
 ** 2001 September 16
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-******************************************************************************
-**
 ** This header file (together with is companion C source-code file
 ** "os.c") attempt to abstract the underlying operating system so that
 ** the SQLite library will work on both POSIX and windows systems.
@@ -21,8 +11,7 @@
 #define _SQLITE_OS_H_
 
 /*
-** Attempt to automatically detect the operating system and setup the
-** necessary pre-processor macros for it.
+** Attempt to automatically detect the operating system and setup the necessary pre-processor macros for it.
 */
 #include "os_setup.h"
 
@@ -165,10 +154,13 @@ int sqlite3OsRead(sqlite3_file*, void*, int amt, i64 offset);
 int sqlite3OsWrite(sqlite3_file*, const void*, int amt, i64 offset);
 int sqlite3OsTruncate(sqlite3_file*, i64 size);
 int sqlite3OsSync(sqlite3_file*, int);
+
 int sqlite3OsFileSize(sqlite3_file*, i64 *pSize);
+
 int sqlite3OsLock(sqlite3_file*, int);
 int sqlite3OsUnlock(sqlite3_file*, int);
 int sqlite3OsCheckReservedLock(sqlite3_file *id, int *pResOut);
+
 int sqlite3OsFileControl(sqlite3_file*,int,void*);
 void sqlite3OsFileControlHint(sqlite3_file*,int,void*);
 #define SQLITE_FCNTL_DB_UNCHANGED 0xca093fa0
@@ -182,7 +174,6 @@ int sqlite3OsShmUnmap(sqlite3_file *id, int);
 #endif /* SQLITE_OMIT_WAL */
 int sqlite3OsFetch(sqlite3_file *id, i64, int, void **);
 int sqlite3OsUnfetch(sqlite3_file *, i64, void *);
-
 
 /* 
 ** Functions for accessing sqlite3_vfs methods 

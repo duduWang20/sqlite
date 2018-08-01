@@ -1,16 +1,6 @@
 /*
-** 2008 August 05
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-*************************************************************************
-** This header file defines the interface that the sqlite page cache
-** subsystem. 
+** 2008 August 05  页面缓存系统
+** This header file defines --- the interface that the sqlite page cache subsystem.
 */
 
 #ifndef _PCACHE_H_
@@ -18,9 +8,12 @@
 typedef struct PgHdr PgHdr;
 typedef struct PCache PCache;
 
+//struct sqlite3_pcache_page {
+//    void *pBuf;        /* The content of the page */
+//    void *pExtra;      /* Extra information associated with the page */
+//};
 /*
-** Every page in the cache is controlled by an instance of the following
-** structure.
+** Every page in the cache is controlled by an instance of the following structure.
 */
 struct PgHdr {
   sqlite3_pcache_page *pPage;    /* Pcache object page handle */

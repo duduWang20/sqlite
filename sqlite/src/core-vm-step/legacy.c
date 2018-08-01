@@ -1,22 +1,11 @@
 /*
 ** 2001 September 15
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-*************************************************************************
 ** Main file for the SQLite library.  The routines in this file
 ** implement the programmer interface to the library.  Routines in
 ** other files are for internal use by SQLite and should not be
 ** accessed by users of the library.
 */
-
 #include "sqliteInt.h"
-
 /*
 ** Execute SQL code.  Return one of the SQLITE_ success/failure
 ** codes.  Also write an error message into memory obtained from
@@ -140,3 +129,4 @@ exec_out:
   sqlite3_mutex_leave(db->mutex);
   return rc;
 }
+

@@ -1,17 +1,6 @@
 /*
-** 2001 September 15
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-*************************************************************************
-** This header file defines the interface that the sqlite B-Tree file
-** subsystem.  See comments in the source code for a detailed description
-** of what each interface routine does.
+** This header file defines the interface that the sqlite B-Tree file subsystem.
+** See comments in the source code for a detailed description of what each interface routine does.
 */
 #ifndef SQLITE_BTREE_H
 #define SQLITE_BTREE_H
@@ -21,7 +10,7 @@
 */
 #define SQLITE_N_BTREE_META 16
 
-/*
+/*缩库 策略
 ** If defined as non-zero, auto-vacuum is enabled by default. Otherwise
 ** it must be turned on for each database using "PRAGMA auto_vacuum = 1".
 */
@@ -42,6 +31,7 @@ typedef struct BtShared BtShared;
 typedef struct BtreePayload BtreePayload;
 
 
+// Each database connection is an instance of struct sqlite3
 int sqlite3BtreeOpen(
   sqlite3_vfs *pVfs,       /* VFS to use with this b-tree */
   const char *zFilename,   /* Name of database file to open */
@@ -50,39 +40,47 @@ int sqlite3BtreeOpen(
   int flags,               /* Flags */
   int vfsFlags             /* Flags passed through to VFS open */
 );
-
 /* The flags parameter to sqlite3BtreeOpen can be the bitwise or of the
 ** following values.
-**
 ** NOTE:  These values must match the corresponding PAGER_ values in
 ** pager.h.
 */
 #define BTREE_OMIT_JOURNAL  1  /* Do not create or use a rollback journal */
 #define BTREE_MEMORY        2  /* This is an in-memory DB */
-#define BTREE_SINGLE        4  /* The file contains at most 1 b-tree */
-#define BTREE_UNORDERED     8  /* Use of a hash implementation is OK */
+#define BTREE_SINGLE        4  /* The file contains at most 1 b-tree ====== ????????????? */
+#define BTREE_UNORDERED     8  /* Use of a hash implementation is OK ===========????????? */
 
-int sqlite3BtreeClose(Btree*);
+int sqlite3BtreeClose(Btree*);//Close an open database and invalidate all cursors.
+
+//paras setting
 int sqlite3BtreeSetCacheSize(Btree*,int);
 int sqlite3BtreeSetSpillSize(Btree*,int);
 #if SQLITE_MAX_MMAP_SIZE>0
   int sqlite3BtreeSetMmapLimit(Btree*,sqlite3_int64);
 #endif
+
 int sqlite3BtreeSetPagerFlags(Btree*,unsigned);
 int sqlite3BtreeSetPageSize(Btree *p, int nPagesize, int nReserve, int eFix);
 int sqlite3BtreeGetPageSize(Btree*);
 int sqlite3BtreeMaxPageCount(Btree*,int);
+
 u32 sqlite3BtreeLastPage(Btree*);
 int sqlite3BtreeSecureDelete(Btree*,int);
 int sqlite3BtreeGetOptimalReserve(Btree*);
 int sqlite3BtreeGetReserveNoMutex(Btree *p);
+
+// auto vacuum
 int sqlite3BtreeSetAutoVacuum(Btree *, int);
 int sqlite3BtreeGetAutoVacuum(Btree *);
+int sqlite3BtreeIncrVacuum(Btree *);
+
+// transaction
 int sqlite3BtreeBeginTrans(Btree*,int,int*);
 int sqlite3BtreeCommitPhaseOne(Btree*, const char *zMaster);
 int sqlite3BtreeCommitPhaseTwo(Btree*, int);
 int sqlite3BtreeCommit(Btree*);
 int sqlite3BtreeRollback(Btree*,int,int);
+
 int sqlite3BtreeBeginStmt(Btree*,int);
 int sqlite3BtreeCreateTable(Btree*, int*, int flags);
 int sqlite3BtreeIsInTrans(Btree*);
@@ -95,11 +93,11 @@ int sqlite3BtreeLockTable(Btree *pBtree, int iTab, u8 isWriteLock);
 #endif
 int sqlite3BtreeSavepoint(Btree *, int, int);
 
+//file
 const char *sqlite3BtreeGetFilename(Btree *);
 const char *sqlite3BtreeGetJournalname(Btree *);
 int sqlite3BtreeCopyFile(Btree *, Btree *);
 
-int sqlite3BtreeIncrVacuum(Btree *);
 
 /* The flags parameter to sqlite3BtreeCreateTable can be the bitwise OR
 ** of the flags shown below.
@@ -119,10 +117,11 @@ int sqlite3BtreeClearTable(Btree*, int, int*);
 int sqlite3BtreeClearTableOfCursor(BtCursor*);
 int sqlite3BtreeTripAllCursors(Btree*, int, int);
 
+int sqlite3BtreeNewDb(Btree *p);
+
+//meta infor
 void sqlite3BtreeGetMeta(Btree *pBtree, int idx, u32 *pValue);
 int sqlite3BtreeUpdateMeta(Btree*, int idx, u32 value);
-
-int sqlite3BtreeNewDb(Btree *p);
 
 /*
 ** The second parameter to sqlite3BtreeGetMeta or sqlite3BtreeUpdateMeta
@@ -339,17 +338,17 @@ int sqlite3BtreeCursorIsValidNN(BtCursor*);
 #ifndef SQLITE_OMIT_BTREECOUNT
 int sqlite3BtreeCount(BtCursor *, i64 *);
 #endif
+#ifndef SQLITE_OMIT_WAL
+int sqlite3BtreeCheckpoint(Btree*, int, int *, int *);
+#endif
 
 #ifdef SQLITE_TEST
 int sqlite3BtreeCursorInfo(BtCursor*, int*, int);
 void sqlite3BtreeCursorList(Btree*);
 #endif
 
-#ifndef SQLITE_OMIT_WAL
-  int sqlite3BtreeCheckpoint(Btree*, int, int *, int *);
-#endif
 
-/*
+/* 互斥
 ** If we are not using shared cache, then there is no need to
 ** use mutexes to access the BtShared structures.  So make the
 ** Enter and Leave procedures no-ops.

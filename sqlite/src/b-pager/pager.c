@@ -1,20 +1,11 @@
 /*
 ** 2001 September 15
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-*************************************************************************
 ** This is the implementation of the page cache subsystem or "pager".
 ** 
-** The pager is used to access a database disk file.  It implements
-** atomic commit and rollback through the use of a journal file that
-** is separate from the database file.  The pager also implements file
-** locking to prevent two processes from writing the same database
+** The pager is used to access a database disk file.
+** It implements ----- atomic commit and rollback ---- through the use of a journal file that
+** is separate from the database file.
+** The pager also implements ------ file locking --- to prevent two processes from writing the same database
 ** file simultaneously, or one process from reading the database while
 ** another is writing.
 */
@@ -167,7 +158,7 @@ int sqlite3PagerTrace=1;  /* True to enable tracing */
 **
 **   WRITER_***        -> ERROR               [pager_error]
 **   ERROR             -> OPEN                [pager_unlock]
-** 
+**
 **
 **  OPEN:
 **
@@ -461,6 +452,9 @@ struct PagerSavepoint {
 #define SPILLFLAG_ROLLBACK    0x02 /* Current rolling back, so do not spill */
 #define SPILLFLAG_NOSYNC      0x04 /* Spill is ok, but do not sync */
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /*
 ** An open page cache is an instance of struct Pager. A description of
 ** some of the more important member variables follows:
@@ -618,7 +612,6 @@ struct PagerSavepoint {
 **   sub-codes.
 **
 ** syncFlags, walSyncFlags
-**
 **   syncFlags is either SQLITE_SYNC_NORMAL (0x02) or SQLITE_SYNC_FULL (0x03).
 **   syncFlags is used for rollback mode.  walSyncFlags is used for WAL mode
 **   and contains the flags used to sync the checkpoint operations in the
@@ -2689,7 +2682,7 @@ static int pager_truncate(Pager *pPager, Pgno nPage){
 
 /*
 ** Return a sanitized version of the sector-size of OS file pFile. The
-** return value is guaranteed to lie between 32 and MAX_SECTOR_SIZE.
+** return value is guaranteed to lie between 32 and MAX_SECTOR_SIZE.  #define MAX_SECTOR_SIZE 0x10000
 */
 int sqlite3SectorSize(sqlite3_file *pFile){
   int iRet = sqlite3OsSectorSize(pFile);

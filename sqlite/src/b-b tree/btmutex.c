@@ -8,9 +8,8 @@
 #ifndef SQLITE_OMIT_SHARED_CACHE
 #if SQLITE_THREADSAFE
 /*
-** Obtain the BtShared mutex associated with B-Tree handle p. Also,
-** set BtShared.db to the database handle associated with p and the
-** p->locked boolean to true.
+** Obtain the BtShared mutex associated with B-Tree handle p.
+** Also, set BtShared.db to the database handle associated with p and the p->locked boolean to true.
 */
 static void lockBtreeMutex(Btree *p){
   assert( p->locked==0 );

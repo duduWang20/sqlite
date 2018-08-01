@@ -182,9 +182,8 @@ struct VdbeFrame {
 #define VdbeFrameMem(p) ((Mem *)&((u8 *)p)[ROUND8(sizeof(VdbeFrame))])
 
 /*
-** Internally, the vdbe manipulates nearly all SQL values as Mem
-** structures. Each Mem struct may cache multiple representations (string,
-** integer etc.) of the same value.
+** Internally, the vdbe manipulates nearly all SQL values as Mem structures.
+** Each Mem struct may cache multiple representations (string, integer etc.) of the same value.
 */
 struct sqlite3_value {
   union MemValue {

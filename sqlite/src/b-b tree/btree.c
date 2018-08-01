@@ -2563,7 +2563,7 @@ static int removeFromSharingList(BtShared *pBt){
   assert( sqlite3_mutex_notheld(pBt->mutex) );
   MUTEX_LOGIC( pMaster = sqlite3MutexAlloc(SQLITE_MUTEX_STATIC_MASTER); )
   sqlite3_mutex_enter(pMaster);
-  pBt->nRef--;
+  pBt->nRef--;/////////////
   if( pBt->nRef<=0 ){
     if( GLOBAL(BtShared*,sqlite3SharedCacheList)==pBt ){
       GLOBAL(BtShared*,sqlite3SharedCacheList) = pBt->pNext;
@@ -2637,10 +2637,10 @@ int sqlite3BtreeClose(Btree *p){
   BtShared *pBt = p->pBt;
   BtCursor *pCur;
 
-  /* Close all cursors opened via this handle.  */
+  /* Close all cursors opened via this handle. */
   assert( sqlite3_mutex_held(p->db->mutex) );
-  sqlite3BtreeEnter(p);
-  pCur = pBt->pCursor;
+  sqlite3BtreeEnter(p);///enter
+  pCur = pBt->pCursor;//关闭游标
   while( pCur ){
     BtCursor *pTmp = pCur;
     pCur = pCur->pNext;
@@ -2648,23 +2648,20 @@ int sqlite3BtreeClose(Btree *p){
       sqlite3BtreeCloseCursor(pTmp);
     }
   }
+   /* Rollback any active transaction and free the handle structure.
+     ** The call to sqlite3BtreeRollback() drops any table-locks held by this handle.
+     */
+  sqlite3BtreeRollback(p, SQLITE_OK, 0);//回滚事务 并 释放句柄结构
+  sqlite3BtreeLeave(p);//leave
 
-  /* Rollback any active transaction and free the handle structure.
-  ** The call to sqlite3BtreeRollback() drops any table-locks held by
-  ** this handle.
-  */
-  sqlite3BtreeRollback(p, SQLITE_OK, 0);
-  sqlite3BtreeLeave(p);
-
-  /* If there are still other outstanding references to the shared-btree
-  ** structure, return now. The remainder of this procedure cleans 
-  ** up the shared-btree.
-  */
+    /* If there are still other outstanding references to the shared-btree
+     ** structure, return now. The remainder of this procedure cleans
+     ** up the shared-btree.
+     */
   assert( p->wantToLock==0 && p->locked==0 );
-  if( !p->sharable || removeFromSharingList(pBt) ){
+  if( !p->sharable || removeFromSharingList(pBt) ){//共享缓存 多个链接使用一个BtShared *pBt
     /* The pBt is no longer on the sharing list, so we can access
     ** it without having to hold the mutex.
-    **
     ** Clean out and delete the BtShared object.
     */
     assert( !pBt->pCursor );
@@ -2679,12 +2676,12 @@ int sqlite3BtreeClose(Btree *p){
 
 #ifndef SQLITE_OMIT_SHARED_CACHE
   assert( p->wantToLock==0 );
-  assert( p->locked==0 );
+  assert( p->locked==0 );// wjf double list
   if( p->pPrev ) p->pPrev->pNext = p->pNext;
   if( p->pNext ) p->pNext->pPrev = p->pPrev;
 #endif
 
-  sqlite3_free(p);
+  sqlite3_free(p);//
   return SQLITE_OK;
 }
 
@@ -2703,7 +2700,6 @@ int sqlite3BtreeSetCacheSize(Btree *p, int mxPage){
   sqlite3BtreeLeave(p);
   return SQLITE_OK;
 }
-
 /*
 ** Change the "spill" limit on the number of pages in the cache.
 ** If the number of pages exceeds this limit during a write transaction,
@@ -3253,8 +3249,8 @@ static int newDatabase(BtShared *pBt){
 
 /*
 ** Initialize the first page of the database file (creating a database
-** consisting of a single page and no schema objects). Return SQLITE_OK
-** if successful, or an SQLite error code otherwise.
+** consisting of a single page and no schema objects).
+** Return SQLITE_OK if successful, or an SQLite error code otherwise.
 */
 int sqlite3BtreeNewDb(Btree *p){
   int rc;
@@ -3266,31 +3262,31 @@ int sqlite3BtreeNewDb(Btree *p){
 }
 
 /*
-** Attempt to start a new transaction. A write-transaction
-** is started if the second argument is nonzero, otherwise a read-
-** transaction.  If the second argument is 2 or more and exclusive
-** transaction is started, meaning that no other process is allowed
-** to access the database.  A preexisting transaction may not be
-** upgraded to exclusive by calling this routine a second time - the
-** exclusivity flag only works for a new transaction.
+** Attempt to start a new transaction.
+** A write-transaction is started if the second argument is nonzero, otherwise a read-transaction.
+** If the second argument is 2 or more and exclusive transaction is started,
+** meaning that no other process is allowed to access the database.
+** A preexisting transaction may not be upgraded to exclusive
+** by calling this routine a second time - the exclusivity flag only works for a new transaction.
 **
 ** A write-transaction must be started before attempting any 
 ** changes to the database.  None of the following routines 
 ** will work unless a transaction is started first:
-**
 **      sqlite3BtreeCreateTable()
-**      sqlite3BtreeCreateIndex()
 **      sqlite3BtreeClearTable()
 **      sqlite3BtreeDropTable()
+ 
+**      sqlite3BtreeCreateIndex()
+ 
 **      sqlite3BtreeInsert()
 **      sqlite3BtreeDelete()
+ 
 **      sqlite3BtreeUpdateMeta()
 **
-** If an initial attempt to acquire the lock fails because of lock contention
-** and the database was previously unlocked, then invoke the busy handler
-** if there is one.  But if there was previously a read-lock, do not
-** invoke the busy handler - just return SQLITE_BUSY.  SQLITE_BUSY is 
-** returned when there is already a read-lock in order to avoid a deadlock.
+** If an initial attempt to acquire the lock fails because of lock contention and the database was previously unlocked,
+** then invoke the busy handler if there is one.
+** But if there was previously a read-lock, do not invoke the busy handler - just return SQLITE_BUSY.
+** SQLITE_BUSY is returned when there is already a read-lock in order to avoid a deadlock.
 **
 ** Suppose there are two processes A and B.  A has a read lock and B has
 ** a reserved lock.  B tries to promote to exclusive but is blocked because
@@ -3443,11 +3439,10 @@ trans_begun:
       *pSchemaVersion = get4byte(&pBt->pPage1->aData[40]);
     }
     if( wrflag ){
-      /* This call makes sure that the pager has the correct number of
-      ** open savepoints. If the second parameter is greater than 0 and
-      ** the sub-journal is not already open, then it will be opened here.
-      */
-      rc = sqlite3PagerOpenSavepoint(pBt->pPager, p->db->nSavepoint);
+        /* This call makes sure that the pager has the correct number of open savepoints.
+         ** If the second parameter is greater than 0 and the sub-journal is not already open, then it will be opened here.
+         */
+        rc = sqlite3PagerOpenSavepoint(pBt->pPager, p->db->nSavepoint);
     }
   }
 
@@ -3880,30 +3875,20 @@ static int autoVacuumCommit(BtShared *pBt){
 #endif
 
 /*
-** This routine does the first phase of a two-phase commit.  This routine
-** causes a rollback journal to be created (if it does not already exist)
-** and populated with enough information so that if a power loss occurs
-** the database can be restored to its original state by playing back
-** the journal.  Then the contents of the journal are flushed out to
-** the disk.  After the journal is safely on oxide, the changes to the
-** database are written into the database file and flushed to oxide.
-** At the end of this call, the rollback journal still exists on the
-** disk and we are still holding all locks, so the transaction has not
-** committed.  See sqlite3BtreeCommitPhaseTwo() for the second phase of the
-** commit process.
+** This routine does the first phase of a two-phase commit.
+** This routine causes a rollback journal to be created (if it does not already exist) and populated with enough information so that if a power loss occurs the database can be restored to its original state by playing back the journal.
+** Then the contents of the journal are flushed out to the disk.
+** After the journal is safely on oxide, the changes to the database are written into the database file and flushed to oxide.
+** At the end of this call, the rollback journal still exists on the disk and we are still holding all locks, so the transaction has not committed.
+** See sqlite3BtreeCommitPhaseTwo() for the second phase of the commit process.
 **
 ** This call is a no-op if no write-transaction is currently active on pBt.
-**
-** Otherwise, sync the database file for the btree pBt. zMaster points to
-** the name of a master journal file that should be written into the
-** individual journal file, or is NULL, indicating no master journal file 
-** (single database transaction).
+** Otherwise, sync the database file for the btree pBt. zMaster points to the name of a master journal file that should be written into the individual journal file, or is NULL, indicating no master journal file  (single database transaction).
 **
 ** When this is called, the master journal should already have been
 ** created, populated with this journal pointer and synced to disk.
 **
-** Once this is routine has returned, the only thing required to commit
-** the write-transaction for this database file is to delete the journal.
+** Once this is routine has returned, the only thing required to commit the write-transaction for this database file is to delete the journal.
 */
 int sqlite3BtreeCommitPhaseOne(Btree *p, const char *zMaster){
   int rc = SQLITE_OK;
@@ -3971,14 +3956,13 @@ static void btreeEndTransaction(Btree *p){
 /*
 ** Commit the transaction currently in progress.
 **
-** This routine implements the second phase of a 2-phase commit.  The
-** sqlite3BtreeCommitPhaseOne() routine does the first phase and should
-** be invoked prior to calling this routine.  The sqlite3BtreeCommitPhaseOne()
-** routine did all the work of writing information out to disk and flushing the
-** contents so that they are written onto the disk platter.  All this
-** routine has to do is delete or truncate or zero the header in the
-** the rollback journal (which causes the transaction to commit) and
-** drop locks.
+** This routine implements the second phase of a 2-phase commit.
+** The sqlite3BtreeCommitPhaseOne() routine does the first phase and should be invoked prior to calling this routine.
+** The sqlite3BtreeCommitPhaseOne() routine did all the work of writing information out to disk and flushing the contents so that they are written onto the disk platter.
+**
+** All this routine has to do is
+        delete or truncate or zero the header in the the rollback journal (which causes the transaction to commit)
+        and drop locks.
 **
 ** Normally, if an error occurs while the pager layer is attempting to 
 ** finalize the underlying journal file, this function returns an error and
@@ -9124,13 +9108,14 @@ int sqlite3BtreeDropTable(Btree *p, int iTable, int *piMoved){
 
 
 /*
-** This function may only be called if the b-tree connection already
-** has a read or write transaction open on the database.
+** This function may only be called if
+        the b-tree connection already has a read or write transaction open on the database.
+        (called between transaction)
 **
-** Read the meta-information out of a database file.  Meta[0]
-** is the number of free pages currently in the database.  Meta[1]
-** through meta[15] are available for use by higher layers.  Meta[0]
-** is read-only, the others are read/write.
+** Read the meta-information out of a database file.
+** Meta[0] is the number of free pages currently in the database.
+** Meta[1] through meta[15] are available for use by higher layers.
+** Meta[0] is read-only, the others are read/write.
 ** 
 ** The schema layer numbers meta values differently.  At the schema
 ** layer (and the SetCookie and ReadCookie opcodes) the number of

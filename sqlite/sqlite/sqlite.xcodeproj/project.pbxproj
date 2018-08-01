@@ -5422,8 +5422,8 @@
 				D5D08FA9210F07BE005F1DA6 /* os.c */,
 				D5D08F5F210F07BE005F1DA6 /* os_unix.c */,
 				D5D08FAB210F07BE005F1DA6 /* os_win.c */,
-				D5D08FC6210F07BE005F1DA6 /* window.c */,
 				D5D08F63210F07BE005F1DA6 /* os_win.h */,
+				D5D08FC6210F07BE005F1DA6 /* window.c */,
 			);
 			path = "b-os";
 			sourceTree = "<group>";
@@ -5431,6 +5431,7 @@
 		D5D0984B210F0E83005F1DA6 /* b-b tree */ = {
 			isa = PBXGroup;
 			children = (
+				D5D08FB0210F07BE005F1DA6 /* vacuum.c */,
 				D5D08F9A210F07BE005F1DA6 /* btmutex.c */,
 				D5D08F58210F07BE005F1DA6 /* btreeInt.h */,
 				D5D08F84210F07BE005F1DA6 /* btree.h */,
@@ -5460,16 +5461,14 @@
 		D5D0984D210F0ED3005F1DA6 /* core-interface */ = {
 			isa = PBXGroup;
 			children = (
-				D5D08F99210F07BE005F1DA6 /* legacy.c */,
 				D5D08F6A210F07BE005F1DA6 /* wherecode.c */,
+				D5D08F52210F07BE005F1DA6 /* where.c */,
+				D5D08F5A210F07BE005F1DA6 /* whereexpr.c */,
+				D5D08F44210F07BE005F1DA6 /* whereInt.h */,
 				D5D08F6E210F07BE005F1DA6 /* select.c */,
 				D5D08F6F210F07BE005F1DA6 /* update.c */,
-				D5D08F44210F07BE005F1DA6 /* whereInt.h */,
 				D5D08F47210F07BE005F1DA6 /* insert.c */,
-				D5D08F4D210F07BE005F1DA6 /* rowset.c */,
-				D5D08F52210F07BE005F1DA6 /* where.c */,
 				D5D08F55210F07BE005F1DA6 /* test_delete.c */,
-				D5D08F5A210F07BE005F1DA6 /* whereexpr.c */,
 			);
 			path = "core-interface";
 			sourceTree = "<group>";
@@ -5484,7 +5483,6 @@
 				D5D08FAD210F07BE005F1DA6 /* parse.y */,
 				D5D08FAE210F07BE005F1DA6 /* trigger.c */,
 				D5D08FAF210F07BE005F1DA6 /* fault.c */,
-				D5D08FB0210F07BE005F1DA6 /* vacuum.c */,
 				D5D08FC1210F07BE005F1DA6 /* expr.c */,
 				D5D08F80210F07BE005F1DA6 /* walker.c */,
 				D5D08F8D210F07BE005F1DA6 /* prepare.c */,
@@ -5499,15 +5497,17 @@
 		D5D0984F210F0EF1005F1DA6 /* core-vm-step */ = {
 			isa = PBXGroup;
 			children = (
-				D5D08F75210F07BE005F1DA6 /* vdbeaux.c */,
 				D5D08F66210F07BE005F1DA6 /* vdbeInt.h */,
-				D5D08F67210F07BE005F1DA6 /* vdbemem.c */,
-				D5D08F48210F07BE005F1DA6 /* vdbeapi.c */,
-				D5D08F50210F07BE005F1DA6 /* vdbeblob.c */,
 				D5D08F54210F07BE005F1DA6 /* vdbetrace.c */,
-				D5D08F64210F07BE005F1DA6 /* vdbe.h */,
 				D5D08F91210F07BE005F1DA6 /* vdbesort.c */,
+				D5D08F48210F07BE005F1DA6 /* vdbeapi.c */,
+				D5D08F64210F07BE005F1DA6 /* vdbe.h */,
 				D5D08FAA210F07BE005F1DA6 /* vdbe.c */,
+				D5D08F99210F07BE005F1DA6 /* legacy.c */,
+				D5D08F75210F07BE005F1DA6 /* vdbeaux.c */,
+				D5D08F50210F07BE005F1DA6 /* vdbeblob.c */,
+				D5D08F67210F07BE005F1DA6 /* vdbemem.c */,
+				D5D08F4D210F07BE005F1DA6 /* rowset.c */,
 			);
 			path = "core-vm-step";
 			sourceTree = "<group>";

@@ -535,13 +535,14 @@ static int doWalCallbacks(sqlite3 *db){
 
 
 /*
-** Execute the statement pStmt, either until a row of data is ready, the
-** statement is completely executed or an error occurs.
+** Execute the statement pStmt,
+            either until a row of data is ready,
+            the statement is completely executed
+            or an error occurs.
 **
-** This routine implements the bulk of the logic behind the sqlite_step()
-** API.  The only thing omitted is the automatic recompile if a 
-** schema change has occurred.  That detail is handled by the
-** outer sqlite3_step() wrapper procedure.
+** This routine implements the bulk of the logic behind the sqlite_step()  API.
+** The only thing omitted is the automatic recompile if a  schema change has occurred.
+** That detail is handled by the outer sqlite3_step() wrapper procedure.
 */
 static int sqlite3Step(Vdbe *p){
   sqlite3 *db;
