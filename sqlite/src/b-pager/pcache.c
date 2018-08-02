@@ -1,57 +1,10 @@
 /*
 ** 2008 August 05
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-*************************************************************************
 ** This file implements that page cache.
 */
 #include "sqliteInt.h"
 
-/*
-** A complete page cache is an instance of this structure.  Every
-** entry in the cache holds a single page of the database file.  The
-** btree layer only operates on the cached copy of the database pages.
-**
-** A page cache entry is "clean" if it exactly matches what is currently
-** on disk.  A page is "dirty" if it has been modified and needs to be
-** persisted to disk.
-**
-** pDirty, pDirtyTail, pSynced:
-**   All dirty pages are linked into the doubly linked list using
-**   PgHdr.pDirtyNext and pDirtyPrev. The list is maintained in LRU order
-**   such that p was added to the list more recently than p->pDirtyNext.
-**   PCache.pDirty points to the first (newest) element in the list and
-**   pDirtyTail to the last (oldest).
-**
-**   The PCache.pSynced variable is used to optimize searching for a dirty
-**   page to eject from the cache mid-transaction. It is better to eject
-**   a page that does not require a journal sync than one that does. 
-**   Therefore, pSynced is maintained to that it *almost* always points
-**   to either the oldest page in the pDirty/pDirtyTail list that has a
-**   clear PGHDR_NEED_SYNC flag or to a page that is older than this one
-**   (so that the right page to eject can be found by following pDirtyPrev
-**   pointers).
-*/
-struct PCache {
-  PgHdr *pDirty, *pDirtyTail;         /* List of dirty pages in LRU order */
-  PgHdr *pSynced;                     /* Last synced page in dirty page list */
-  int nRefSum;                        /* Sum of ref counts over all pages */
-  int szCache;                        /* Configured cache size */
-  int szSpill;                        /* Size before spilling occurs */
-  int szPage;                         /* Size of every page in this cache */
-  int szExtra;                        /* Size of extra space for each page */
-  u8 bPurgeable;                      /* True if pages are on backing store */
-  u8 eCreate;                         /* eCreate value for for xFetch() */
-  int (*xStress)(void*,PgHdr*);       /* Call to try make a page clean */
-  void *pStress;                      /* Argument to xStress */
-  sqlite3_pcache *pCache;             /* Pluggable cache module */
-};
+//pcacher -struct  wjf
 
 /********************************** Test and Debug Logic **********************/
 /*

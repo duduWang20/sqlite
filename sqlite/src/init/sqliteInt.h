@@ -3336,9 +3336,8 @@ typedef struct {
 } InitData;
 
 /*
-** Structure containing global configuration data for the SQLite library.
-**
-** This structure also contains some state information.
+** Structure containing ---  global configuration data for the SQLite library.
+** This structure also contains some ----- state information.
 */
 struct Sqlite3Config {
   int bMemstat;                     /* True to enable memory status */
@@ -3352,22 +3351,29 @@ struct Sqlite3Config {
   int szLookaside;                  /* Default lookaside buffer size */
   int nLookaside;                   /* Default lookaside buffer count */
   int nStmtSpill;                   /* Stmt-journal spill-to-disk threshold */
+//////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
   sqlite3_mem_methods m;            /* Low-level memory allocation interface */
   sqlite3_mutex_methods mutex;      /* Low-level mutex interface */
   sqlite3_pcache_methods2 pcache2;  /* Low-level page-cache interface */
   void *pHeap;                      /* Heap storage space */
   int nHeap;                        /* Size of pHeap[] */
   int mnReq, mxReq;                 /* Min and max heap requests sizes */
+    /* cap min request size at 2^12 */
+    
   sqlite3_int64 szMmap;             /* mmap() space per open file */
   sqlite3_int64 mxMmap;             /* Maximum value for szMmap */
+    
   void *pPage;                      /* Page cache memory */
   int szPage;                       /* Size of each page in pPage[] */
   int nPage;                        /* Number of pages in pPage[] */
+    
   int mxParserStack;                /* maximum depth of the parser stack */
   int sharedCacheEnabled;           /* true if shared-cache mode enabled */
   u32 szPma;                        /* Maximum Sorter PMA size */
-  /* The above might be initialized to non-zero.  The following need to always
-  ** initially be zero, however. */
+    
+    /* The above might be initialized to non-zero.  The following need to always initially be zero, however. */
   int isInit;                       /* True after initialization has finished */
   int inProgress;                   /* True while initialization in progress */
   int isMutexInit;                  /* True after mutexes are initialized */
@@ -3377,6 +3383,7 @@ struct Sqlite3Config {
   sqlite3_mutex *pInitMutex;        /* Mutex used by sqlite3_initialize() */
   void (*xLog)(void*,int,const char*); /* Function for logging */
   void *pLogArg;                       /* First argument to xLog() */
+
 #ifdef SQLITE_ENABLE_SQLLOG
   void(*xSqllog)(void*,sqlite3*,const char*, int);
   void *pSqllogArg;

@@ -1,37 +1,40 @@
 /*
 ** 2001 September 15
-** This header file defines the interface that the sqlite page cache
-** subsystem.  The page cache subsystem reads and writes a file a page
-** at a time and provides a journal for rollback.
+** This header file defines the interface that the sqlite page cache subsystem.
+** The page cache subsystem     reads and writes a file ---- a page at a time and
+**                              provides a journal for rollback.
 */
-
 #ifndef SQLITE_PAGER_H
 #define SQLITE_PAGER_H
 
 /*
-** Default maximum size for persistent journal files. A negative 
-** value means no limit. This value may be overridden using the 
-** sqlite3PagerJournalSizeLimit() API. See also "PRAGMA journal_size_limit".
+** Default maximum size for persistent journal files. A negative value means no limit.
+** This value may be overridden using the ---- sqlite3PagerJournalSizeLimit() API.
+** See also "PRAGMA journal_size_limit".
 */
 #ifndef SQLITE_DEFAULT_JOURNAL_SIZE_LIMIT
-  #define SQLITE_DEFAULT_JOURNAL_SIZE_LIMIT -1
+  #define SQLITE_DEFAULT_JOURNAL_SIZE_LIMIT -1 // no limit   日志上限
 #endif
 
 /*
-** The type used to represent a page number.  The first page in a file
-** is called page 1.  0 is used to represent "not a page".
+** The type used to represent a page number.
+** The first page in a file is called page 1.
+** 0 is used to represent "not a page".
 */
-typedef u32 Pgno;
-
+typedef u32 Pgno;//页号
 /*
 ** Each open file is managed by a separate instance of the "Pager" structure.
 */
 typedef struct Pager Pager;// 分页器
 /*
-** Handle type for pages.
+** Handle type for pages. 页句柄
 */
 typedef struct PgHdr DbPage;
 
+////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+//日志
 /*
 ** Page number PAGER_MJ_PGNO is never used in an SQLite database (it is
 ** reserved for working around a windows/posix incompatibility). It is
@@ -42,21 +45,21 @@ typedef struct PgHdr DbPage;
 */
 #define PAGER_MJ_PGNO(x) ((Pgno)((PENDING_BYTE/((x)->pageSize))+1))
 
+//sqlite3PagerOpen
 /*
 ** Allowed values for the flags parameter to sqlite3PagerOpen().
-**
 ** NOTE: These values must match the corresponding BTREE_ values in btree.h.
 */
 #define PAGER_OMIT_JOURNAL  0x0001    /* Do not use a rollback journal */
 #define PAGER_MEMORY        0x0002    /* In-memory database */
-
+//sqlite3PagerLockingMode
 /*
 ** Valid values for the second argument to sqlite3PagerLockingMode().
 */
 #define PAGER_LOCKINGMODE_QUERY      -1
 #define PAGER_LOCKINGMODE_NORMAL      0
 #define PAGER_LOCKINGMODE_EXCLUSIVE   1
-
+//PRAGMA journal_mode
 /*
 ** Numeric constants that encode the journalmode.
 **
@@ -71,13 +74,13 @@ typedef struct PgHdr DbPage;
 #define PAGER_JOURNALMODE_TRUNCATE    3   /* Commit by truncating journal */
 #define PAGER_JOURNALMODE_MEMORY      4   /* In-memory journal file */
 #define PAGER_JOURNALMODE_WAL         5   /* Use write-ahead logging */
-
+//sqlite3PagerGet
 /*
 ** Flags that make up the mask passed to sqlite3PagerGet().
 */
 #define PAGER_GET_NOCONTENT     0x01  /* Do not load data from disk */
 #define PAGER_GET_READONLY      0x02  /* Read-only page is acceptable */
-
+//sqlite3PagerSetFlags
 /*
 ** Flags for sqlite3PagerSetFlags()
 **
@@ -91,6 +94,7 @@ typedef struct PgHdr DbPage;
 #define PAGER_SYNCHRONOUS_FULL      0x03  /* PRAGMA synchronous=FULL */
 #define PAGER_SYNCHRONOUS_EXTRA     0x04  /* PRAGMA synchronous=EXTRA */
 #define PAGER_SYNCHRONOUS_MASK      0x07  /* Mask for four values above */
+
 #define PAGER_FULLFSYNC             0x08  /* PRAGMA fullfsync=ON */
 #define PAGER_CKPT_FULLFSYNC        0x10  /* PRAGMA checkpoint_fullfsync=ON */
 #define PAGER_CACHESPILL            0x20  /* PRAGMA cache_spill=ON */
@@ -102,7 +106,7 @@ typedef struct PgHdr DbPage;
 ** a detailed description of each routine.
 */
 
-/* Open and close a Pager connection. */ 
+/* Open and close a Pager connection. */ //wjf
 int sqlite3PagerOpen(
   sqlite3_vfs*,
   Pager **ppPager,
@@ -112,7 +116,7 @@ int sqlite3PagerOpen(
   int,
   void(*)(DbPage*)
 );
-int sqlite3PagerClose(Pager *pPager, sqlite3*);
+int sqlite3PagerClose(Pager *pPager, sqlite3*);//wjf
 int sqlite3PagerReadFileheader(Pager*, int, unsigned char*);
 
 /* Functions used to configure a Pager object. */
@@ -128,6 +132,8 @@ void sqlite3PagerSetMmapLimit(Pager *, sqlite3_int64);
 void sqlite3PagerShrink(Pager*);
 void sqlite3PagerSetFlags(Pager*,unsigned);
 int sqlite3PagerLockingMode(Pager *, int);
+
+//
 int sqlite3PagerSetJournalMode(Pager *, int);
 int sqlite3PagerGetJournalMode(Pager*);
 int sqlite3PagerOkToChangeJournalMode(Pager*);

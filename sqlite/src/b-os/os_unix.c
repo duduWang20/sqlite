@@ -1,15 +1,5 @@
 /*
 ** 2004 May 22
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-******************************************************************************
-**
 ** This file contains the VFS implementation for unix-like operating systems
 ** include Linux, MacOSX, *BSD, QNX, VxWorks, AIX, HPUX, and others.
 **
@@ -76,9 +66,11 @@
 # define HAVE_PREAD 1
 # define HAVE_PWRITE 1
 #endif
+
 #if defined(HAVE_PREAD64) && defined(HAVE_PWRITE64)
 # undef USE_PREAD
 # define USE_PREAD64 1
+
 #elif defined(HAVE_PREAD) && defined(HAVE_PWRITE)
 # undef USE_PREAD64
 # define USE_PREAD 1
@@ -379,10 +371,15 @@ static struct unix_syscall {
 
   { "access",       (sqlite3_syscall_ptr)access,     0  },
 #define osAccess    ((int(*)(const char*,int))aSyscall[2].pCurrent)
-
+/*如前所述，当用open函数打开一个文件的时候，内核以进程的有效用户ID和有效组ID，为基础执行期访问权限测试。
+ 有时候，进程也希望按期实际用户ID，和实际组ID，来测试访问能力。
+access函数是按照实际用户ID和实际组ID,进行访问权限测试的。*/
   { "getcwd",       (sqlite3_syscall_ptr)getcwd,     0  },
 #define osGetcwd    ((char*(*)(char*,size_t))aSyscall[3].pCurrent)
-
+/*函数原型：char *getcwd( char *buffer, int maxlen );
+功 能：获取当前工作目录
+参数说明：getcwd()会将当前工作目录的绝对路径复制到参数buffer所指的内存空间中,参数maxlen为buffer的空间大小。
+返 回 值：成功则返回当前工作目录，失败返回 FALSE。*/
   { "stat",         (sqlite3_syscall_ptr)stat,       0  },
 #define osStat      ((int(*)(const char*,struct stat*))aSyscall[4].pCurrent)
 
@@ -408,24 +405,43 @@ static struct unix_syscall {
 
   { "read",         (sqlite3_syscall_ptr)read,       0  },
 #define osRead      ((ssize_t(*)(int,void*,size_t))aSyscall[8].pCurrent)
-
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
 #if defined(USE_PREAD) || SQLITE_ENABLE_LOCKING_STYLE
   { "pread",        (sqlite3_syscall_ptr)pread,      0  },
+    /*pread函数的操作可以看作是顺序调用了lseek函数和read函数，同样pwrite函数也类似。
+    函数参数：
+    fd：要操作的文件描述符
+    buf：在pread函数中表示存储读出数据的内存首地址，在pwrite函数中表示写入数据的内存首地址
+    count：在pread函数中表示希望读出的字节数，在pwrite函数中表示希望写入的字节数
+    offset：表示从哪个位置开始读取或者写入数据。偏移量是从文件开头开始计算
+    返回值：
+    调用成功时pread函数返回实际读到的字节数，遇到文件结尾则返回0；pwrite返回写入的字节数
+    调用失败时pread函数返回 -1 ；pwrite函数返回 -1 .
+    =======================================================
+    pread函数相当于先后调用了lseek和read函数，但是还是有区别的，有以下两点区别：
+    pread函数是原子操作，而先后调用两个函数不是原子操作
+    pread函数是不会改变当前文件偏移量的，而read和write函数会改变当前文件偏移量
+    */
 #else
   { "pread",        (sqlite3_syscall_ptr)0,          0  },
 #endif
 #define osPread     ((ssize_t(*)(int,void*,size_t,off_t))aSyscall[9].pCurrent)
-
+////////////////////////////////////////////////////////////////////
 #if defined(USE_PREAD64)
   { "pread64",      (sqlite3_syscall_ptr)pread64,    0  },
+//The pread64() function is identical to the pread() function
+//except that it uses the larger off64_t in order to manipulate
+//the file position of files that are larger than 2 gigabytes.
 #else
   { "pread64",      (sqlite3_syscall_ptr)0,          0  },
 #endif
 #define osPread64 ((ssize_t(*)(int,void*,size_t,off64_t))aSyscall[10].pCurrent)
-
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
   { "write",        (sqlite3_syscall_ptr)write,      0  },
 #define osWrite     ((ssize_t(*)(int,const void*,size_t))aSyscall[11].pCurrent)
-
+////////////////////////////////////////////////////////////////////
 #if defined(USE_PREAD) || SQLITE_ENABLE_LOCKING_STYLE
   { "pwrite",       (sqlite3_syscall_ptr)pwrite,     0  },
 #else
@@ -433,7 +449,7 @@ static struct unix_syscall {
 #endif
 #define osPwrite    ((ssize_t(*)(int,const void*,size_t,off_t))\
                     aSyscall[12].pCurrent)
-
+////////////////////////////////////////////////////////////////////
 #if defined(USE_PREAD64)
   { "pwrite64",     (sqlite3_syscall_ptr)pwrite64,   0  },
 #else
@@ -441,95 +457,144 @@ static struct unix_syscall {
 #endif
 #define osPwrite64  ((ssize_t(*)(int,const void*,size_t,off64_t))\
                     aSyscall[13].pCurrent)
-
+////////////////////////////////////////////////////////////////////
   { "fchmod",       (sqlite3_syscall_ptr)fchmod,          0  },
 #define osFchmod    ((int(*)(int,mode_t))aSyscall[14].pCurrent)
-
+////////////////////////////////////////////////////////////////////
 #if defined(HAVE_POSIX_FALLOCATE) && HAVE_POSIX_FALLOCATE
   { "fallocate",    (sqlite3_syscall_ptr)posix_fallocate,  0 },
 #else
   { "fallocate",    (sqlite3_syscall_ptr)0,                0 },
 #endif
 #define osFallocate ((int(*)(int,off_t,off_t))aSyscall[15].pCurrent)
-
+////////////////////////////////////////////////////////////////////
   { "unlink",       (sqlite3_syscall_ptr)unlink,           0 },
 #define osUnlink    ((int(*)(const char*))aSyscall[16].pCurrent)
 
   { "openDirectory",    (sqlite3_syscall_ptr)openDirectory,      0 },
+    //can be overridden using the xSetSysCall interface.
 #define osOpenDirectory ((int(*)(const char*,int*))aSyscall[17].pCurrent)
-
   { "mkdir",        (sqlite3_syscall_ptr)mkdir,           0 },
 #define osMkdir     ((int(*)(const char*,mode_t))aSyscall[18].pCurrent)
-
   { "rmdir",        (sqlite3_syscall_ptr)rmdir,           0 },
 #define osRmdir     ((int(*)(const char*))aSyscall[19].pCurrent)
-
+////////////////////////////////////////////////////////////////////
 #if defined(HAVE_FCHOWN)
   { "fchown",       (sqlite3_syscall_ptr)fchown,          0 },
 #else
   { "fchown",       (sqlite3_syscall_ptr)0,               0 },
 #endif
 #define osFchown    ((int(*)(int,uid_t,gid_t))aSyscall[20].pCurrent)
-
+//会将参数fd指定文件的所有者变更为参数owner代表的用户，而将该文件的组变更为参数group组。
+////////////////////////////////////////////////////////////////////
 #if defined(HAVE_FCHOWN)
   { "geteuid",      (sqlite3_syscall_ptr)geteuid,         0 },
 #else
   { "geteuid",      (sqlite3_syscall_ptr)0,               0 },
 #endif
 #define osGeteuid   ((uid_t(*)(void))aSyscall[21].pCurrent)
-
+    /*geteuid()：返回有效用户的ID。
+     getuid（）：返回实际用户的ID。
+     
+     有效用户ID（EUID）是你最初执行程序时所用的ID
+     表示该ID是程序的所有者
+     真实用户ID（UID）是程序执行过程中采用的ID
+     该ID表明当前运行位置程序的执行者
+     举个例子
+     程序myprogram的所有者为501/anna
+     以501运行该程序此时UID和EUID都是501
+     但是由于中间要访问某些系统资源
+     需要使用root身份
+     此时UID为0而EUID仍是501*/
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
 #if !defined(SQLITE_OMIT_WAL) || SQLITE_MAX_MMAP_SIZE>0
   { "mmap",         (sqlite3_syscall_ptr)mmap,            0 },
 #else
   { "mmap",         (sqlite3_syscall_ptr)0,               0 },
 #endif
 #define osMmap ((void*(*)(void*,size_t,int,int,int,off_t))aSyscall[22].pCurrent)
-
+/*
+ void* mmap(void* start,size_t length,int prot,int flags,int fd,off_t offset);
+ int munmap(void* start,size_t length);
+*/
+////////////////////////////////////////////////////////////////////
 #if !defined(SQLITE_OMIT_WAL) || SQLITE_MAX_MMAP_SIZE>0
   { "munmap",       (sqlite3_syscall_ptr)munmap,          0 },
 #else
   { "munmap",       (sqlite3_syscall_ptr)0,               0 },
 #endif
 #define osMunmap ((int(*)(void*,size_t))aSyscall[23].pCurrent)
-
+////////////////////////////////////////////////////////////////////
 #if HAVE_MREMAP && (!defined(SQLITE_OMIT_WAL) || SQLITE_MAX_MMAP_SIZE>0)
   { "mremap",       (sqlite3_syscall_ptr)mremap,          0 },
 #else
   { "mremap",       (sqlite3_syscall_ptr)0,               0 },
 #endif
 #define osMremap ((void*(*)(void*,size_t,size_t,int,...))aSyscall[24].pCurrent)
-
+/*重新映射的虚拟内存地址
+ mremap() 扩大（或缩小）现有的内存映射，
+ 潜在的移动它在同一时间（由flags参数和可用的虚拟地址空间控制）。*/
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
 #if !defined(SQLITE_OMIT_WAL) || SQLITE_MAX_MMAP_SIZE>0
-  { "getpagesize",  (sqlite3_syscall_ptr)unixGetpagesize, 0 },
+    { "getpagesize",  (sqlite3_syscall_ptr)unixGetpagesize, 0 },//#if OS_VXWORKS return 1024;
 #else
   { "getpagesize",  (sqlite3_syscall_ptr)0,               0 },
 #endif
 #define osGetpagesize ((int(*)(void))aSyscall[25].pCurrent)
-
+////////////////////////////////////////////////////////////////////
 #if defined(HAVE_READLINK)
   { "readlink",     (sqlite3_syscall_ptr)readlink,        0 },
 #else
   { "readlink",     (sqlite3_syscall_ptr)0,               0 },
 #endif
 #define osReadlink ((ssize_t(*)(const char*,char*,size_t))aSyscall[26].pCurrent)
-
+/*ymlink 函数和 readlink 函数主要是针对符号链接文件的操作。
+ symlink 函数用来创建符号链接文件，和 link 文件是对应的。
+ readlink 函数用来读取链接文件本身的内容（也就是符号链接指向的文件的文件名）。*/
+////////////////////////////////////////////////////////////////////
 #if defined(HAVE_LSTAT)
   { "lstat",         (sqlite3_syscall_ptr)lstat,          0 },
 #else
   { "lstat",         (sqlite3_syscall_ptr)0,              0 },
 #endif
 #define osLstat      ((int(*)(const char*,struct stat*))aSyscall[27].pCurrent)
-
+    /*   功 能: 获取一些文件相关的信息
+     用 法: int lstat(const char *path, struct stat *buf);
+     参数：
+     path：文件路径名。
+     filedes：文件描述词。
+     buf：是以下结构体的指针
+     struct stat {
+     dev_t st_dev;   文件所在设备的标识 *
+     ino_t st_ino;   文件结点号 *
+     mode_t st_mode;  文件保护模式 *
+     nlink_t st_nlink;   硬连接数 *
+     uid_t st_uid;   文件用户标识 *
+     gid_t st_gid;   文件用户组标识 *
+     dev_t st_rdev;   文件所表示的特殊设备文件的设备标识 *
+     off_t st_size;   总大小，单位为字节*
+     blksize_t st_blksize;   文件系统的块大小 *
+     blkcnt_t st_blocks;   分配给文件的块的数量，512字节为单元 *
+     time_t st_atime;   最后访问时间 *
+     time_t st_mtime;   最后修改时间 *
+     time_t st_ctime;   最后状态改变时间 *
+     }*/
+////////////////////////////////////////////////////////////////////
 #if defined(__linux__) && defined(SQLITE_ENABLE_BATCH_ATOMIC_WRITE)
   { "ioctl",         (sqlite3_syscall_ptr)ioctl,          0 },
 #else
   { "ioctl",         (sqlite3_syscall_ptr)0,              0 },
 #endif
 #define osIoctl ((int(*)(int,int,...))aSyscall[28].pCurrent)
-
+/*ioctl是设备驱动程序中对设备的I/O通道进行管理的函数。所谓对I/O通道进行管理，就是对设备的一些特性进行控制，例如串口的传输波特率、马达的转速等等。它的参数个数如下：int ioctl(int fd, int cmd, …)；其中fd就是用户程序打开设备时使用open函数返回的文件标示符，cmd就是用户程序对设备的控制命令，至于后面的省略号，那是一些补充参数，一般最多一个，有或没有是和cmd的意义相关的。ioctl函数是文件结构中的一个属性分量，就是说如果你的驱动程序提供了对ioctl的支持，用户就能在用户程序中使用ioctl函数控制设备的I/O通道。*/
 }; /* End of the overrideable system calls */
+//wjf
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
 /*
 ** On some systems, calls to fchown() will trigger a message in a security
 ** log if they come from non-root processes.  So avoid calling fchown() if
@@ -691,8 +756,8 @@ static int robust_open(const char *z, int f, mode_t m){
 
 /*
 ** Helper functions to obtain and relinquish the global mutex. The
-** global mutex is used to protect the unixInodeInfo and
-** vxworksFileId objects used by this file, all of which may be 
+** global mutex is used to protect ===== the unixInodeInfo and vxworksFileId objects
+** used by this file, all of which may be
 ** shared by multiple threads.
 **
 ** Function unixMutexHeld() is used to assert() that the global mutex 
@@ -3255,6 +3320,8 @@ static int seekAndRead(unixFile *id, sqlite3_int64 offset, void *pBuf, int cnt){
   return got+prior;
 }
 
+
+////////////////////////////////////////////wjf
 /*
 ** Read data from a file into a buffer.  Return SQLITE_OK if all
 ** bytes were read successfully and SQLITE_IOERR if anything goes
@@ -3271,7 +3338,6 @@ static int unixRead(
   assert( id );
   assert( offset>=0 );
   assert( amt>0 );
-
   /* If this is a database file (not a journal, master-journal or temp
   ** file), the bytes in the locking range should never be read or written. */
 #if 0
@@ -3282,10 +3348,11 @@ static int unixRead(
 #endif
 
 #if SQLITE_MAX_MMAP_SIZE>0
-  /* Deal with as much of this read request as possible by transfering
-  ** data from the memory mapping using memcpy().  */
+  /* Deal with as much of this read request as possible
+        by transfering data from the memory mapping using memcpy().  */
   if( offset<pFile->mmapSize ){
     if( offset+amt <= pFile->mmapSize ){
+        //wjf --- wjfmmap(disk-app read) vs disk-core-app read
       memcpy(pBuf, &((u8 *)(pFile->pMapRegion))[offset], amt);
       return SQLITE_OK;
     }else{
@@ -4673,9 +4740,8 @@ static int unixShmMap(
       void *pMem;
       if( pShmNode->h>=0 ){
         pMem = osMmap(0, nMap,
-            pShmNode->isReadonly ? PROT_READ : PROT_READ|PROT_WRITE, 
-            MAP_SHARED, pShmNode->h, szRegion*(i64)pShmNode->nRegion
-        );
+                    pShmNode->isReadonly ? PROT_READ : PROT_READ|PROT_WRITE, MAP_SHARED,
+                    pShmNode->h, szRegion*(i64)pShmNode->nRegion);
         if( pMem==MAP_FAILED ){
           rc = unixLogError(SQLITE_IOERR_SHMMAP, "mmap", pShmNode->zFilename);
           goto shmpage_out;

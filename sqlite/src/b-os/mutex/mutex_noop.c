@@ -1,14 +1,5 @@
 /*
 ** 2008 October 07
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-*************************************************************************
 ** This file contains the C functions that implement mutexes.
 **
 ** This implementation in this file does not provide any mutual
@@ -58,7 +49,6 @@ sqlite3_mutex_methods const *sqlite3NoopMutex(void){
     noopMutexEnter,
     noopMutexTry,
     noopMutexLeave,
-
     0,
     0,
   };

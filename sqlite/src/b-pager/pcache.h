@@ -2,43 +2,9 @@
 ** 2008 August 05  页面缓存系统
 ** This header file defines --- the interface that the sqlite page cache subsystem.
 */
-
 #ifndef _PCACHE_H_
 
-typedef struct PgHdr PgHdr;
-typedef struct PCache PCache;
-
-//struct sqlite3_pcache_page {
-//    void *pBuf;        /* The content of the page */
-//    void *pExtra;      /* Extra information associated with the page */
-//};
-/*
-** Every page in the cache is controlled by an instance of the following structure.
-*/
-struct PgHdr {
-  sqlite3_pcache_page *pPage;    /* Pcache object page handle */
-  void *pData;                   /* Page data */
-  void *pExtra;                  /* Extra content */
-  PCache *pCache;                /* PRIVATE: Cache that owns this page */
-  PgHdr *pDirty;                 /* Transient list of dirty sorted by pgno */
-  Pager *pPager;                 /* The pager this page is part of */
-  Pgno pgno;                     /* Page number for this page */
-#ifdef SQLITE_CHECK_PAGES
-  u32 pageHash;                  /* Hash of page content */
-#endif
-  u16 flags;                     /* PGHDR flags defined below */
-
-  /**********************************************************************
-  ** Elements above, except pCache, are public.  All that follow are 
-  ** private to pcache.c and should not be accessed by other modules.
-  ** pCache is grouped with the public elements for efficiency.
-  */
-  i16 nRef;                      /* Number of users of this page */
-  PgHdr *pDirtyNext;             /* Next element in list of dirty pages */
-  PgHdr *pDirtyPrev;             /* Previous element in list of dirty pages */
-                          /* NB: pDirtyNext and pDirtyPrev are undefined if the
-                          ** PgHdr object is not dirty */
-};
+//pcacher -struct  wjf
 
 /* Bit values for PgHdr.flags */
 #define PGHDR_CLEAN           0x001  /* Page not on the PCache.pDirty list */
@@ -177,3 +143,4 @@ int sqlite3HeaderSizePcache1(void);
 int sqlite3PCachePercentDirty(PCache*);
 
 #endif /* _PCACHE_H_ */
+

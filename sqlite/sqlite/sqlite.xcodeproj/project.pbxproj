@@ -3464,6 +3464,8 @@
 		D5D091A7210F07CF005F1DA6 /* crash01.test */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = crash01.test; sourceTree = "<group>"; };
 		D5D09859210FFC2E005F1DA6 /* btree-doc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "btree-doc.h"; sourceTree = "<group>"; };
 		D5D098612110672F005F1DA6 /* btree-check.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "btree-check.h"; sourceTree = "<group>"; };
+		D5D098742112FC52005F1DA6 /* pager-struct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pager-struct.h"; sourceTree = "<group>"; };
+		D5D098752113381B005F1DA6 /* PCache-struct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PCache-struct.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4686,6 +4688,7 @@
 		D5D08F2D210F07BD005F1DA6 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				D5D08F86210F07BE005F1DA6 /* sqlite.h.in */,
 				D5D09858210F32D6005F1DA6 /* virtual-table */,
 				D5D09852210F13B5005F1DA6 /* tests */,
 				D5D09851210F1249005F1DA6 /* init */,
@@ -5407,13 +5410,14 @@
 		D5D0984A210F0E4F005F1DA6 /* b-os */ = {
 			isa = PBXGroup;
 			children = (
+				D5D09853210F146A005F1DA6 /* memory */,
+				D5D09854210F148D005F1DA6 /* mutex */,
 				D5D08FB2210F07BE005F1DA6 /* test_vfstrace.c */,
 				D5D08F4F210F07BE005F1DA6 /* test_quota.h */,
 				D5D08F31210F07BD005F1DA6 /* test_multiplex.c */,
 				D5D08F85210F07BE005F1DA6 /* test_multiplex.h */,
 				D5D08F8F210F07BE005F1DA6 /* test_quota.c */,
 				D5D08FA8210F07BE005F1DA6 /* test_vfs.c */,
-				D5D08F86210F07BE005F1DA6 /* sqlite.h.in */,
 				D5D08FA2210F07BE005F1DA6 /* test_osinst.c */,
 				D5D08F74210F07BE005F1DA6 /* test_window.c */,
 				D5D08F38210F07BD005F1DA6 /* os_common.h */,
@@ -5454,6 +5458,8 @@
 				D5D08F79210F07BE005F1DA6 /* test_pcache.c */,
 				D5D08FB6210F07BE005F1DA6 /* pager.h */,
 				D5D08F78210F07BE005F1DA6 /* pager.c */,
+				D5D098742112FC52005F1DA6 /* pager-struct.h */,
+				D5D098752113381B005F1DA6 /* PCache-struct.h */,
 			);
 			path = "b-pager";
 			sourceTree = "<group>";
@@ -5528,8 +5534,6 @@
 				D5D08FA0210F07BE005F1DA6 /* tokenize.c */,
 				D5D08FA1210F07BE005F1DA6 /* utf.c */,
 				D5D08FA4210F07BE005F1DA6 /* date.c */,
-				D5D09854210F148D005F1DA6 /* mutex */,
-				D5D09853210F146A005F1DA6 /* memory */,
 				D5D08F2F210F07BD005F1DA6 /* printf.c */,
 				D5D08F3D210F07BE005F1DA6 /* auth.c */,
 				D5D08F40210F07BE005F1DA6 /* hwtime.h */,
@@ -5612,10 +5616,10 @@
 			children = (
 				D5D08F45210F07BE005F1DA6 /* test_malloc.c */,
 				D5D08F87210F07BE005F1DA6 /* mem0.c */,
-				D5D08FB4210F07BE005F1DA6 /* mem3.c */,
-				D5D08F36210F07BD005F1DA6 /* mem2.c */,
-				D5D08F5B210F07BE005F1DA6 /* mem5.c */,
 				D5D08F5C210F07BE005F1DA6 /* mem1.c */,
+				D5D08F36210F07BD005F1DA6 /* mem2.c */,
+				D5D08FB4210F07BE005F1DA6 /* mem3.c */,
+				D5D08F5B210F07BE005F1DA6 /* mem5.c */,
 				D5D08F9C210F07BE005F1DA6 /* malloc.c */,
 				D5D08FA5210F07BE005F1DA6 /* delete.c */,
 			);
@@ -5625,12 +5629,12 @@
 		D5D09854210F148D005F1DA6 /* mutex */ = {
 			isa = PBXGroup;
 			children = (
-				D5D08FBA210F07BE005F1DA6 /* notify.c */,
-				D5D08FBB210F07BE005F1DA6 /* mutex_w32.c */,
+				D5D08FAC210F07BE005F1DA6 /* mutex.h */,
 				D5D08F60210F07BE005F1DA6 /* mutex.c */,
 				D5D08F7F210F07BE005F1DA6 /* mutex_noop.c */,
-				D5D08FAC210F07BE005F1DA6 /* mutex.h */,
+				D5D08FBB210F07BE005F1DA6 /* mutex_w32.c */,
 				D5D08F35210F07BD005F1DA6 /* mutex_unix.c */,
+				D5D08FBA210F07BE005F1DA6 /* notify.c */,
 			);
 			path = mutex;
 			sourceTree = "<group>";

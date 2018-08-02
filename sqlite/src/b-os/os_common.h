@@ -1,15 +1,5 @@
 /*
 ** 2004 May 22
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-******************************************************************************
-**
 ** This file contains macros and a little bit of code that is common to
 ** all of the platform-specific files (os_*.c) and is #included into those
 ** files.

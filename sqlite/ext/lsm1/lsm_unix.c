@@ -411,7 +411,8 @@ static int lsmPosixOsShmMap(lsm_file *pFile, int iChunk, int sz, void **ppShm){
 
   if( p->apShm[iChunk]==0 ){
     p->apShm[iChunk] = mmap(0, LSM_SHM_CHUNK_SIZE, 
-        PROT_READ|PROT_WRITE, MAP_SHARED, p->shmfd, iChunk*LSM_SHM_CHUNK_SIZE
+                            PROT_READ|PROT_WRITE, MAP_SHARED,
+                            p->shmfd, iChunk*LSM_SHM_CHUNK_SIZE
     );
     if( p->apShm[iChunk]==0 ) return LSM_IOERR_BKPT;
   }
