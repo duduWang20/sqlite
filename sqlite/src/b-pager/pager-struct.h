@@ -11,80 +11,75 @@
  ** automatically as soon as it is written when PRAGMA synchronous=OFF.
  ** Otherwise, the page is not synced until the xSync method of the VFS
  ** is called successfully on the file containing the page.
+ 页同步时机：
+ PRAGMA synchronous=OFF时，写操作发生后，便立即进行页同步操作。
+ 否则会一直等到VFS的xSync调用成功后再同步。
  **
  ** Definition:  A page of the database file is said to be "overwriteable" if
  ** one or more of the following are true about the page:
- **
  **     (a)  The original content of the page as it was at the beginning of
  **          the transaction has been written into the rollback journal and
- **          synced.
- **
+ **          synced.事务开始时，页原来内容，写到日志中，且已经同步。
  **     (b)  The page was a freelist leaf page at the start of the transaction.
- **
+ **         事务开始时，页书自由列表的叶子页
  **     (c)  The page number is greater than the largest page that existed in
  **          the database file at the start of the transaction.
- **
+ **         事务开始时，页号是已存在页中最大的
  ** (1) A page of the database file is never overwritten unless one of the
  **     following are true:
- **
  **     (a) The page and all other pages on the same sector are overwriteable.
- **
+ **     统一区上的所有页，都可以复写，
  **     (b) The atomic page write optimization is enabled, and the entire
  **         transaction other than the update of the transaction sequence
  **         number consists of a single page change.
- **
+ **         页写操作原子优化，
  ** (2) The content of a page written into the rollback journal exactly matches
  **     both the content in the database when the rollback journal was written
  **     and the content in the database at the beginning of the current
  **     transaction.
  **
  ** (3) Writes to the database file are an integer multiple of the page size
- **     in length and are aligned on a page boundary.
- **
+ **     in length and are aligned on a page boundary. 以页为单位写，页单位对齐
  ** (4) Reads from the database file are either aligned on a page boundary and
  **     an integer multiple of the page size in length or are taken from the
  **     first 100 bytes of the database file.
- **
+ 
  ** (5) All writes to the database file are synced prior to the rollback journal
- **     being deleted, truncated, or zeroed.
- **
+ **     being deleted, truncated, or zeroed.日志文件删除、截取或是清零，发生在写同步之后
  ** (6) If a master journal file is used, then all writes to the database file
  **     are synced prior to the master journal being deleted.
- **
+
  ** Definition: Two databases (or the same database at two points it time)
  ** are said to be "logically equivalent" if they give the same answer to
  ** all queries.  Note in particular the content of freelist leaf
  ** pages can be changed arbitrarily without affecting the logical equivalence
  ** of the database.
- **
+
  ** (7) At any time, if any subset, including the empty set and the total set,
  **     of the unsynced changes to a rollback journal are removed and the
  **     journal is rolled back, the resulting database file will be logically
  **     equivalent to the database file at the beginning of the transaction.
+ **     未同步变更移除后，逻辑等价性  ？？？？？
  **
  ** (8) When a transaction is rolled back, the xTruncate method of the VFS
  **     is called to restore the database file to the same size it was at
  **     the beginning of the transaction.  (In some VFSes, the xTruncate
  **     method is a no-op, but that does not change the fact the SQLite will
- **     invoke it.)
+ **     invoke it.)回滚后，调用xTruncate
  **
  ** (9) Whenever the database file is modified, at least one bit in the range
  **     of bytes from 24 through 39 inclusive will be changed prior to releasing
  **     the EXCLUSIVE lock, thus signaling other connections on the same
- **     database to flush their caches.
- **
+ **     database to flush their caches. 修改计数，文件头 24 -- 39 byte
  ** (10) The pattern of bits in bytes 24 through 39 shall not repeat in less
  **      than one billion transactions.
  **
- ** (11) A database file is well-formed at the beginning and at the conclusion
- **      of every transaction.
+ ** (11) A database file is well-formed === at the beginning and at the conclusion of every transaction.
  **
  ** (12) An EXCLUSIVE lock is held on the database file when writing to
- **      the database file.
- **
+ **      the database file. 写时 互斥锁
  ** (13) A SHARED lock is held on the database file while reading any
- **      content out of the database file.
- **
+ **      content out of the database file. 读时 共享锁
  ******************************************************************************/
 
 /*
@@ -97,7 +92,6 @@ int sqlite3PagerTrace=1;  /* True to enable tracing */
 #else
 #define PAGERTRACE(X)
 #endif
-
 /*
  ** The following two macros are used within the PAGERTRACE() macros above
  ** to print out file-descriptors.
@@ -439,15 +433,14 @@ struct PagerSavepoint {
 #define SPILLFLAG_NOSYNC      0x04 /* Spill is ok, but do not sync */
 
 /*
- ** An open page cache is an instance of struct Pager. A description of
- ** some of the more important member variables follows:
+ ** An open page cache is an instance of struct Pager.
+ ** A description of some of the more important member variables follows:
  **
  ** eState
  **   The current 'state' of the pager object. See the comment and state
  **   diagram above for a description of the pager state.
  **
  ** eLock
- **
  **   For a real on-disk database, the current lock held on the database file -
  **   NO_LOCK, SHARED_LOCK, RESERVED_LOCK or EXCLUSIVE_LOCK.
  **
@@ -699,6 +692,9 @@ struct Pager {
     char *zWal;                 /* File name for write-ahead log */
 #endif
 };
-
+//pPager->pageSize
+//+ pPager->nExtra
+//+ sizeof(PgHdr)
+//+ 5*sizeof(void*);
 #endif /* pager_struct_h */
 

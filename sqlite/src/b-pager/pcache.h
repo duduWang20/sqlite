@@ -4,6 +4,8 @@
 */
 #ifndef _PCACHE_H_
 
+#include "pager-struct.h"
+#include "PCache-struct.h"
 //pcacher -struct  wjf
 
 /* Bit values for PgHdr.flags */

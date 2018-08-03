@@ -1705,6 +1705,8 @@
 		D5D09847210F07D4005F1DA6 /* mptest.c in Sources */ = {isa = PBXBuildFile; fileRef = D5D091A5210F07CF005F1DA6 /* mptest.c */; };
 		D5D09848210F07D4005F1DA6 /* config02.test in Resources */ = {isa = PBXBuildFile; fileRef = D5D091A6210F07CF005F1DA6 /* config02.test */; };
 		D5D09849210F07D4005F1DA6 /* crash01.test in Resources */ = {isa = PBXBuildFile; fileRef = D5D091A7210F07CF005F1DA6 /* crash01.test */; };
+		D5D0987821142F05005F1DA6 /* pager-imp.c in Sources */ = {isa = PBXBuildFile; fileRef = D5D0987721142F05005F1DA6 /* pager-imp.c */; };
+		D5D0987B2114308D005F1DA6 /* pager-tool.c in Sources */ = {isa = PBXBuildFile; fileRef = D5D0987A2114308D005F1DA6 /* pager-tool.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -3466,6 +3468,10 @@
 		D5D098612110672F005F1DA6 /* btree-check.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "btree-check.h"; sourceTree = "<group>"; };
 		D5D098742112FC52005F1DA6 /* pager-struct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pager-struct.h"; sourceTree = "<group>"; };
 		D5D098752113381B005F1DA6 /* PCache-struct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PCache-struct.h"; sourceTree = "<group>"; };
+		D5D0987621142F05005F1DA6 /* pager-imp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pager-imp.h"; sourceTree = "<group>"; };
+		D5D0987721142F05005F1DA6 /* pager-imp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "pager-imp.c"; sourceTree = "<group>"; };
+		D5D098792114308D005F1DA6 /* pager-tool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pager-tool.h"; sourceTree = "<group>"; };
+		D5D0987A2114308D005F1DA6 /* pager-tool.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "pager-tool.c"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -5456,10 +5462,15 @@
 				D5D08FC2210F07BE005F1DA6 /* pcache.c */,
 				D5D08F7E210F07BE005F1DA6 /* pcache1.c */,
 				D5D08F79210F07BE005F1DA6 /* test_pcache.c */,
+				D5D08FBC210F07BE005F1DA6 /* backup.c */,
 				D5D08FB6210F07BE005F1DA6 /* pager.h */,
 				D5D08F78210F07BE005F1DA6 /* pager.c */,
 				D5D098742112FC52005F1DA6 /* pager-struct.h */,
 				D5D098752113381B005F1DA6 /* PCache-struct.h */,
+				D5D0987621142F05005F1DA6 /* pager-imp.h */,
+				D5D0987721142F05005F1DA6 /* pager-imp.c */,
+				D5D098792114308D005F1DA6 /* pager-tool.h */,
+				D5D0987A2114308D005F1DA6 /* pager-tool.c */,
 			);
 			path = "b-pager";
 			sourceTree = "<group>";
@@ -5642,7 +5653,6 @@
 		D5D09855210F24AF005F1DA6 /* log */ = {
 			isa = PBXGroup;
 			children = (
-				D5D08FBC210F07BE005F1DA6 /* backup.c */,
 				D5D08FC3210F07BE005F1DA6 /* wal.h */,
 				D5D08F6B210F07BE005F1DA6 /* wal.c */,
 				D5D08F46210F07BE005F1DA6 /* memjournal.c */,
@@ -7210,6 +7220,7 @@
 				D5D0963D210F07D2005F1DA6 /* insert.c in Sources */,
 				D5D097BB210F07D4005F1DA6 /* lsm_vtab.c in Sources */,
 				D5D09629210F07D2005F1DA6 /* test_init.c in Sources */,
+				D5D0987B2114308D005F1DA6 /* pager-tool.c in Sources */,
 				D5D09202210F07D0005F1DA6 /* kvtest.c in Sources */,
 				D5D095E1210F07D2005F1DA6 /* pagesig.c in Sources */,
 				D5D0969A210F07D3005F1DA6 /* test_loadext.c in Sources */,
@@ -7264,6 +7275,7 @@
 				D5D0967F210F07D3005F1DA6 /* test_rtree.c in Sources */,
 				D5D0965F210F07D3005F1DA6 /* random.c in Sources */,
 				D5D0962F210F07D2005F1DA6 /* mutex_unix.c in Sources */,
+				D5D0987821142F05005F1DA6 /* pager-imp.c in Sources */,
 				D5D09847210F07D4005F1DA6 /* mptest.c in Sources */,
 				D5D096E2210F07D3005F1DA6 /* carray.c in Sources */,
 				D5D0966E210F07D3005F1DA6 /* test_wsd.c in Sources */,

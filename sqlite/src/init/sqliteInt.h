@@ -1377,7 +1377,7 @@ struct sqlite3 {
   struct Vdbe *pVdbe;           /* List of active virtual machines */
   CollSeq *pDfltColl;           /* The default collating sequence (BINARY) */
   sqlite3_mutex *mutex;         /* Connection mutex */
-  Db *aDb;                      /* All backends */
+  Db *aDb;                      /* All backends *///  a list of Db
   int nDb;                      /* Number of backends currently in use */
   u32 mDbFlags;                 /* flags recording internal state */
   u32 flags;                    /* flags settable by pragmas. See below */

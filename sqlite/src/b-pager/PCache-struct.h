@@ -1,11 +1,4 @@
 //
-//  PCacher-struct.h
-//  sqlite
-//
-//  Created by wangjufan on 2018/8/2.
-//  Copyright © 2018 wangjufan. All rights reserved.
-//
-
 #ifndef PCacher_struct_h
 #define PCacher_struct_h
 
@@ -37,8 +30,10 @@
 struct PCache {//Least Recently Used (LRU)   Least Frequently Used (LFU)
     PgHdr *pDirty, *pDirtyTail;         /* List of dirty pages in LRU order */
     PgHdr *pSynced;                     /* Last synced page in dirty page list */
+    
     int nRefSum;                        /* Sum of ref counts over all pages */
     int szCache;                        /* Configured cache size */
+    
     int szSpill;                        /* Size before spilling occurs */
     int szPage;                         /* Size of every page in this cache */
     int szExtra;                        /* Size of extra space for each page */
@@ -48,8 +43,6 @@ struct PCache {//Least Recently Used (LRU)   Least Frequently Used (LFU)
     void *pStress;                      /* Argument to xStress */
     sqlite3_pcache *pCache;             /* Pluggable cache module */
 };
-
-
 
 typedef struct PgHdr PgHdr;
 typedef struct PCache PCache;

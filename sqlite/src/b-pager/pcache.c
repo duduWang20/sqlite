@@ -4,6 +4,9 @@
 */
 #include "sqliteInt.h"
 
+#include "pager-struct.h"
+#include "PCache-struct.h"
+
 //pcacher -struct  wjf
 
 /********************************** Test and Debug Logic **********************/
