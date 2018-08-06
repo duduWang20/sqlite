@@ -462,10 +462,16 @@ static int pagerUnlockDb(Pager *pPager, int eLock){
 static int pagerLockDb(Pager *pPager, int eLock){
   int rc = SQLITE_OK;
 
-  assert( eLock==SHARED_LOCK || eLock==RESERVED_LOCK || eLock==EXCLUSIVE_LOCK );
+  assert( eLock==SHARED_LOCK
+         || eLock==RESERVED_LOCK
+         || eLock==EXCLUSIVE_LOCK );
   if( pPager->eLock<eLock || pPager->eLock==UNKNOWN_LOCK ){
+      
     rc = pPager->noLock ? SQLITE_OK : sqlite3OsLock(pPager->fd, eLock);
-    if( rc==SQLITE_OK && (pPager->eLock!=UNKNOWN_LOCK||eLock==EXCLUSIVE_LOCK) ){
+      
+    if( rc==SQLITE_OK
+       && (pPager->eLock!=UNKNOWN_LOCK||eLock==EXCLUSIVE_LOCK)
+     ){
       pPager->eLock = (u8)eLock;
       IOTRACE(("LOCK %p %d\n", pPager, eLock))
     }
@@ -3172,9 +3178,8 @@ int sqlite3PagerReadFileheader(Pager *pPager, int N, unsigned char *pDest){
 void sqlite3PagerPagecount(Pager *pPager, int *pnPage){
   assert( pPager->eState>=PAGER_READER );
   assert( pPager->eState!=PAGER_WRITER_FINISHED );
-  *pnPage = (int)pPager->dbSize;
+  *pnPage = (int)pPager->dbSize;//page number
 }
-
 
 /*
 ** Try to obtain a lock of type locktype on the database file. If
@@ -6149,7 +6154,8 @@ int sqlite3PagerState(Pager *pPager){
 ** This function may return SQLITE_NOMEM or an IO error code if an error
 ** occurs. Otherwise, it returns SQLITE_OK.
 */
-int sqlite3PagerMovepage(Pager *pPager, DbPage *pPg, Pgno pgno, int isCommit){
+int sqlite3PagerMovepage( Pager *pPager, DbPage *pPg,
+                         Pgno pgno, int isCommit){
   PgHdr *pPgOld;               /* The page being overwritten. */
   Pgno needSyncPgno = 0;       /* Old value of pPg->pgno, if sync is required */
   int rc;                      /* Return code */
@@ -6296,7 +6302,6 @@ void *sqlite3PagerGetData(DbPage *pPg){
   assert( pPg->nRef>0 || pPg->pPager->memDb );
   return pPg->pData;
 }
-
 /*
 ** Return a pointer to the Pager.nExtra bytes of "extra" space 
 ** allocated along with the specified page.
@@ -6682,8 +6687,8 @@ int sqlite3PagerCloseWal(Pager *pPager, sqlite3 *db){
 
 #ifdef SQLITE_ENABLE_SNAPSHOT
 /*
-** If this is a WAL database, obtain a snapshot handle for the snapshot
-** currently open. Otherwise, return an error.
+** If this is a WAL database, obtain === a snapshot handle for the snapshot currently open.
+** Otherwise, return an error.
 */
 int sqlite3PagerSnapshotGet(Pager *pPager, sqlite3_snapshot **ppSnapshot){
   int rc = SQLITE_ERROR;

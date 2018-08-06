@@ -1,45 +1,28 @@
 /*
 ** 2007 October 14
+**  C functions
+**  memory allocation subsystem
 **
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
+** This version of the memory allocation subsystem === omits all use of malloc().
+** The application gives SQLite a block of memory before calling sqlite3_initialize() from which allocations
+** are made and returned by the xMalloc() and xRealloc() implementations.
+** Once sqlite3_initialize() has been called, the amount of memory available to SQLite is fixed and cannot be changed.?????
 **
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
+**  included in if SQLITE_ENABLE_MEMSYS5 is defined.
 **
-*************************************************************************
-** This file contains the C functions that implement a memory
-** allocation subsystem for use by SQLite. 
-**
-** This version of the memory allocation subsystem omits all
-** use of malloc(). The application gives SQLite a block of memory
-** before calling sqlite3_initialize() from which allocations
-** are made and returned by the xMalloc() and xRealloc() 
-** implementations. Once sqlite3_initialize() has been called,
-** the amount of memory available to SQLite is fixed and cannot
-** be changed.
-**
-** This version of the memory allocation subsystem is included
-** in the build only if SQLITE_ENABLE_MEMSYS5 is defined.
-**
-** This memory allocator uses the following algorithm:
-**
-**   1.  All memory allocation sizes are rounded up to a power of 2.
-**
-**   2.  If two adjacent free blocks are the halves of a larger block,
+** This memory allocator uses the following algorithm:                  内存分配策略
+**   1.  All memory allocation sizes are rounded up to a power of 2.   2的米兹
+**   2.  If two adjacent free blocks are the halves of a larger block,   合并
 **       then the two blocks are coalesced into the single larger block.
+**   3.  New memory is allocated from the first available free block.     低块分配
+** This algorithm is described in: J. M. Robson.
+** "Bounds for Some Functions Concerning Dynamic Storage Allocation".   谢谢谢谢谢谢谢谢谢谢谢谢
+** Journal of the Association for Computing Machinery, Volume 21, Number 8, July 1974, pages 491-499.
 **
-**   3.  New memory is allocated from the first available free block.
-**
-** This algorithm is described in: J. M. Robson. "Bounds for Some Functions
-** Concerning Dynamic Storage Allocation". Journal of the Association for
-** Computing Machinery, Volume 21, Number 8, July 1974, pages 491-499.
-** 
-** Let n be the size of the largest allocation divided by the minimum
-** allocation size (after rounding all sizes up to a power of 2.)  Let M
-** be the maximum amount of memory ever outstanding at one time.  Let
-** N be the total amount of memory available for allocation.  Robson
+** Let n be the size of the largest allocation divided by the minimum allocation size
+            (after rounding all sizes up to a power of 2.)                  n  =    最大分配块大小 / 最小分配块大小
+** Let M be the maximum amount of memory ever outstanding at one time.      M  =  内存分配的峰值
+** Let N be the total amount of memory available for allocation.  Robson    N  =  可分配的总内存
 ** proved that this memory allocator will never breakdown due to 
 ** fragmentation as long as the following constraint holds:
 **

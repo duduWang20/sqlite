@@ -1475,7 +1475,7 @@ struct sqlite3 {
   Db aDbStatic[2];              /* Static space for the 2 default backends */
   Savepoint *pSavepoint;        /* List of active savepoints */
   int busyTimeout;              /* Busy handler timeout, in msec */
-  int nSavepoint;               /* Number of non-transaction savepoints */
+  int nSavepoint;               /* Number of non-transaction savepoints */  //非事务保存点
   int nStatement;               /* Number of nested statement-transactions  */
   i64 nDeferredCons;            /* Net deferred constraints this transaction. */
   i64 nDeferredImmCons;         /* Net deferred immediate constraints */

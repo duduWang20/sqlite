@@ -1,56 +1,38 @@
 /*
-** 2001 September 15
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-*************************************************************************
-**
 ** Memory allocation functions used throughout sqlite.
 */
 #include "sqliteInt.h"
 #include <stdarg.h>
 
-/*
-** Attempt to release up to n bytes of non-essential memory currently
-** held by SQLite. An example of non-essential memory is memory used to
-** cache database pages that are not currently in use.
-*/
+
+//释放 缓存的多余页
+/** Attempt to release up to n bytes of non-essential memory currently held by SQLite.
+** An example of non-essential memory is memory used to --- cache database pages that are ---- not currently in use.*/
 int sqlite3_release_memory(int n){
 #ifdef SQLITE_ENABLE_MEMORY_MANAGEMENT
   return sqlite3PcacheReleaseMemory(n);
 #else
-  /* IMPLEMENTATION-OF: R-34391-24921 The sqlite3_release_memory() routine
-  ** is a no-op returning zero if SQLite is not compiled with
-  ** SQLITE_ENABLE_MEMORY_MANAGEMENT. */
+  /* IMPLEMENTATION-OF: R-34391-24921 The sqlite3_release_memory() routine is a no-op returning zero
+    **  if SQLite is not compiled with SQLITE_ENABLE_MEMORY_MANAGEMENT. */
   UNUSED_PARAMETER(n);
   return 0;
 #endif
 }
+//#define UNUSED_PARAMETER(x) (void)(x)
+//#define UNUSED_PARAMETER2(x,y) UNUSED_PARAMETER(x),UNUSED_PARAMETER(y)
 
 /*
 ** State information local to the memory allocation subsystem.
 */
 static SQLITE_WSD struct Mem0Global {
   sqlite3_mutex *mutex;         /* Mutex to serialize access */
-  sqlite3_int64 alarmThreshold; /* The soft heap limit */
-
-  /*
-  ** True if heap is nearly "full" where "full" is defined by the
-  ** sqlite3_soft_heap_limit() setting.
-  */
+  sqlite3_int64 alarmThreshold; /* The soft heap limit  堆的软极限 */
+  /* True if heap is nearly "full" where "full" is defined by the sqlite3_soft_heap_limit() setting. */
   int nearlyFull;
 } mem0 = { 0, 0, 0 };
-
 #define mem0 GLOBAL(struct Mem0Global, mem0)
 
-/*
-** Return the memory allocator mutex. sqlite3_status() needs it.
-*/
+/* Return the memory allocator mutex. sqlite3_status() needs it.*/
 sqlite3_mutex *sqlite3MallocMutex(void){
   return mem0.mutex;
 }
@@ -58,13 +40,11 @@ sqlite3_mutex *sqlite3MallocMutex(void){
 #ifndef SQLITE_OMIT_DEPRECATED
 /*
 ** Deprecated external interface.  It used to set an alarm callback
-** that was invoked when memory usage grew too large.  Now it is a
-** no-op.
+** that was invoked when memory usage grew too large.  Now it is a no-op.
 */
 int sqlite3_memory_alarm(
   void(*xCallback)(void *pArg, sqlite3_int64 used,int N),
-  void *pArg,
-  sqlite3_int64 iThreshold
+  void *pArg, sqlite3_int64 iThreshold
 ){
   (void)xCallback;
   (void)pArg;

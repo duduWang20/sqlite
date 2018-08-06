@@ -1,15 +1,5 @@
 /*
-** 2007 August 14
-**
-** The author disclaims copyright to this source code.  In place of
-** a legal notice, here is a blessing:
-**
-**    May you do good and not evil.
-**    May you find forgiveness for yourself and forgive others.
-**    May you share freely, never taking more than you give.
-**
-*************************************************************************
-**
+** 2007 August 14 
 ** This file contains low-level memory allocation drivers for when
 ** SQLite will use the standard C-library malloc/realloc/free interface
 ** to obtain the memory it needs.

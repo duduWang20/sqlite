@@ -867,7 +867,7 @@ void sqlite3GenerateRowIndexDelete(
 ** to false or null.  If pIdx is not a partial index, *piPartIdxLabel
 ** will be set to zero which is an empty label that is ignored by
 ** sqlite3ResolvePartIdxLabel().
-**
+** 
 ** The pPrior and regPrior parameters are used to implement a cache to
 ** avoid unnecessary register loads.  If pPrior is not NULL, then it is
 ** a pointer to a different index for which an index key has just been

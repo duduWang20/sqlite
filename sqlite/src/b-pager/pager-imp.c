@@ -143,8 +143,8 @@ static int pager_write_pagelist(Pager *pPager, PgHdr *pList){
     assert( pPager->eLock==EXCLUSIVE_LOCK );
     assert( isOpen(pPager->fd) || pList->pDirty==0 );
     
-    /* If the file is a temp-file has not yet been opened, open it now. It
-     ** is not possible for rc to be other than SQLITE_OK if this branch
+    /* If the file is a temp-file has not yet been opened, open it now.
+     ** It is not possible for rc to be other than SQLITE_OK if this branch
      ** is taken, as pager_wait_on_lock() is a no-op for temp-files.
      */
     if( !isOpen(pPager->fd) ){

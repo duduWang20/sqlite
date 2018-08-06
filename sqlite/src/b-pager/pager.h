@@ -164,23 +164,41 @@ void sqlite3PagerUnrefPageOne(DbPage*);
 /* Operations on page references. */
 int sqlite3PagerWrite(DbPage*);
 void sqlite3PagerDontWrite(DbPage*);
-int sqlite3PagerMovepage(Pager*,DbPage*,Pgno,int);
-int sqlite3PagerPageRefcount(DbPage*);
+
+int sqlite3PagerMovepage(Pager*,DbPage*,Pgno,int); //页 移动，删除表 添加表 或是删除数据 引起
+int sqlite3PagerPageRefcount(DbPage*); //页 引用计数
+
 void *sqlite3PagerGetData(DbPage *); 
 void *sqlite3PagerGetExtra(DbPage *); 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 /* Functions used to manage pager transactions and savepoints. */
-void sqlite3PagerPagecount(Pager*, int*);
-int sqlite3PagerBegin(Pager*, int exFlag, int);
+void sqlite3PagerPagecount(Pager*, int*);  //page number
+
+int sqlite3PagerBegin(Pager*, int exFlag, int);// 事务
 int sqlite3PagerCommitPhaseOne(Pager*,const char *zMaster, int);
-int sqlite3PagerExclusiveLock(Pager*);
-int sqlite3PagerSync(Pager *pPager, const char *zMaster);
 int sqlite3PagerCommitPhaseTwo(Pager*);
+int sqlite3PagerSync(Pager *pPager, const char *zMaster);
 int sqlite3PagerRollback(Pager*);
-int sqlite3PagerOpenSavepoint(Pager *pPager, int n);
-int sqlite3PagerSavepoint(Pager *pPager, int op, int iSavepoint);
+
+/*Transactions can be deferred, immediate, or exclusive. The default transaction behavior is deferred.
+ Deferred means that no locks are acquired on the database until the database is first accessed.
+ Thus with a deferred transaction, the BEGIN statement itself does nothing to the filesystem.
+ Locks are not acquired until the first read or write operation.
+ The first read operation against a database creates a SHARED lock and the first write operation creates a RESERVED lock.
+ Because the acquisition of locks is deferred until they are needed, it is possible that another thread or process could create a separate transaction and write to the database after the BEGIN on the current thread has executed.
+ If the transaction is immediate, then RESERVED locks are acquired on all databases as soon as the BEGIN command is executed, without waiting for the database to be used.
+ After a BEGIN IMMEDIATE, no other database connection will be able to write to the database or do a BEGIN IMMEDIATE or BEGIN EXCLUSIVE.
+ Other processes can continue to read from the database, however.
+ An exclusive transaction causes EXCLUSIVE locks to be acquired on all databases.
+ After a BEGIN EXCLUSIVE, no other database connection except for read_uncommitted connections
+ will be able to read the database and no other connection without exception
+ will be able to write the database until the transaction is complete. */
+int sqlite3PagerOpenSavepoint(Pager *pPager, int n);// 打开 一个save point
+int sqlite3PagerSavepoint(Pager *pPager, int op, int iSavepoint);//回滚或是释放 一个save point
+
 int sqlite3PagerSharedLock(Pager *pPager);
+int sqlite3PagerExclusiveLock(Pager*);
 
 #ifndef SQLITE_OMIT_WAL
   int sqlite3PagerCheckpoint(Pager *pPager, sqlite3*, int, int*, int*);
@@ -188,16 +206,16 @@ int sqlite3PagerSharedLock(Pager *pPager);
   int sqlite3PagerWalCallback(Pager *pPager);
   int sqlite3PagerOpenWal(Pager *pPager, int *pisOpen);
   int sqlite3PagerCloseWal(Pager *pPager, sqlite3*);
-# ifdef SQLITE_DIRECT_OVERFLOW_READ
-  int sqlite3PagerUseWal(Pager *pPager, Pgno);
-# endif
-# ifdef SQLITE_ENABLE_SNAPSHOT
-  int sqlite3PagerSnapshotGet(Pager *pPager, sqlite3_snapshot **ppSnapshot);
-  int sqlite3PagerSnapshotOpen(Pager *pPager, sqlite3_snapshot *pSnapshot);
-  int sqlite3PagerSnapshotRecover(Pager *pPager);
-# endif
+    # ifdef SQLITE_DIRECT_OVERFLOW_READ
+      int sqlite3PagerUseWal(Pager *pPager, Pgno);
+    # endif ////////
+    # ifdef SQLITE_ENABLE_SNAPSHOT
+      int sqlite3PagerSnapshotGet(Pager *pPager, sqlite3_snapshot **ppSnapshot);
+      int sqlite3PagerSnapshotOpen(Pager *pPager, sqlite3_snapshot *pSnapshot);
+      int sqlite3PagerSnapshotRecover(Pager *pPager);
+    # endif
 #else
-# define sqlite3PagerUseWal(x,y) 0
+    # define sqlite3PagerUseWal(x,y) 0
 #endif
 
 #ifdef SQLITE_ENABLE_ZIPVFS
