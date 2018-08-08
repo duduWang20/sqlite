@@ -1,25 +1,22 @@
 /*
 ** 2001 September 15
-** Main file for the SQLite library.  The routines in this file
-** implement the programmer interface to the library.  Routines in
-** other files are for internal use by SQLite and should not be
-** accessed by users of the library.
+** Main file for the SQLite library.  The routines in this file implement the programmer interface to the library.
+** Routines in other files are for internal use by SQLite and should not be accessed by users of the library.
 */
 #include "sqliteInt.h"
 /*
-** Execute SQL code.  Return one of the SQLITE_ success/failure
-** codes.  Also write an error message into memory obtained from
-** malloc() and make *pzErrMsg point to that message.
+** Execute SQL code.
+** Return one of the SQLITE_ success/failure codes.
+** Also write an error message into memory obtained from malloc() and make *pzErrMsg point to that message.
 **
-** If the SQL is a query, then for each row in the query result
-** the xCallback() function is called.  pArg becomes the first
-** argument to xCallback().  If xCallback=NULL then no callback
-** is invoked, even for queries.
+** If the SQL is a query, then for each row in the query result the xCallback() function is called.
+** pArg becomes the first argument to xCallback().
+** If xCallback=NULL then no callback is invoked, even for queries.
 */
 int sqlite3_exec(
   sqlite3 *db,                /* The database on which the SQL executes */
-  const char *zSql,           /* The SQL to be executed */
-  sqlite3_callback xCallback, /* Invoke this callback routine */
+  const char *zSql,            /* The SQL to be executed */
+  sqlite3_callback xCallback,    /* Invoke this callback routine */
   void *pArg,                 /* First argument to xCallback() */
   char **pzErrMsg             /* Write error messages here */
 ){
@@ -59,8 +56,9 @@ int sqlite3_exec(
 
       /* Invoke the callback function if required */
       if( xCallback && (SQLITE_ROW==rc || 
-          (SQLITE_DONE==rc && !callbackIsInit
-                           && db->flags&SQLITE_NullCallback)) ){
+          (SQLITE_DONE==rc
+            && !callbackIsInit
+            && db->flags&SQLITE_NullCallback)) ){
         if( !callbackIsInit ){
           azCols = sqlite3DbMallocRaw(db, (2*nCol+1)*sizeof(const char*));
           if( azCols==0 ){

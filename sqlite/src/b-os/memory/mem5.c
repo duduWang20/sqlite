@@ -21,12 +21,12 @@
 **
 ** Let n be the size of the largest allocation divided by the minimum allocation size
             (after rounding all sizes up to a power of 2.)                  n  =    最大分配块大小 / 最小分配块大小
-** Let M be the maximum amount of memory ever outstanding at one time.      M  =  内存分配的峰值
+** Let M be the maximum amount of memory ever outstanding at one time.      M  =  已发生的内存分配的峰值
 ** Let N be the total amount of memory available for allocation.  Robson    N  =  可分配的总内存
 ** proved that this memory allocator will never breakdown due to 
 ** fragmentation as long as the following constraint holds:
 **
-**      N >=  M*(1 + log2(n)/2) - n + 1
+**      N >=  M*(1 + log2(n)/2) - n + 1   n趋近于1时，N趋近于M，系统可预测。 wonderfull!!!!
 **
 ** The sqlite3_status() logic tracks the maximum values of n and M so
 ** that an application can, at any time, verify this constraint.
