@@ -883,7 +883,6 @@ typedef INT16_TYPE LogEst;
 ** to force 8-byte alignment on 64-bit architectures.
 */
 #define ROUND8(x)     (((x)+7)&~7)
-
 /*
 ** Round down to the nearest multiple of 8
 */
