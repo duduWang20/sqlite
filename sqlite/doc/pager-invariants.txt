@@ -1,16 +1,19 @@
- *** Throughout this document, a page is deemed to have been synced
+
+*** Throughout this document, a page is deemed to have been synced
      automatically as soon as it is written when PRAGMA synchronous=OFF.
      Otherwise, the page is not synced until the xSync method of the VFS
      is called successfully on the file containing the page.
 
- *** Definition:  A page of the database file is said to be "overwriteable" if
-     one or more of the following are true about the page:
+ *** Definition:  A page of the database file is said to be "overwriteable"
+        if one or more of the following are true about the page:
+        数据库文件的页在以下情形中被称为可以复写：
  
      (a)  The original content of the page as it was at the beginning of
           the transaction has been written into the rollback journal and
-          synced.
+          synced. 事务开始前页面原来的内容，已经被写入回滚日志中了，并且被同步。
  
      (b)  The page was a freelist leaf page at the start of the transaction.
+            在事务开始时，页面时自由叶子页面，
  
      (c)  The page number is greater than the largest page that existed in
           the database file at the start of the transaction.
@@ -74,3 +77,6 @@
 
 (13) A SHARED lock must be held on the database file before reading any
      content out of the database file.
+
+
+
