@@ -145,3 +145,8 @@ int sqlite3PCachePercentDirty(PCache*);
 
 #endif /* _PCACHE_H_ */
 
+/*
+ 监控：读数量 + 写数量 + 加载页数量 + 换出页数量
+ 
+ */
+

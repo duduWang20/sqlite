@@ -10,24 +10,27 @@
 #define btree_check_h
 
 /*
- ** This routine does a complete check of the given BTree file.  aRoot[] is
- ** an array of pages numbers were each page number is the root page of
- ** a table.  nRoot is the number of entries in aRoot.
- **
+ ** This routine does a complete check 完整性检测 of the given BTree file.
+ 
+ ** aRoot[] is an array of pages numbers were each page number is the root page of
+ ** a table.  nRoot is the number of entries in aRoot.表的根页号
  ** A read-only or read-write transaction must be opened before calling
  ** this function.
  **
+ 
  ** Write the number of error seen in *pnErr.  Except for some memory
  ** allocation errors,  an error message held in memory obtained from
  ** malloc is returned if *pnErr is non-zero.  If *pnErr==0 then NULL is
  ** returned.  If a memory allocation error occurs, NULL is returned.
  */
 char *sqlite3BtreeIntegrityCheck(
-                                 Btree *p,     /* The btree to be checked */
-                                 int *aRoot,   /* An array of root pages numbers for individual trees */
-                                 int nRoot,    /* Number of entries in aRoot[] */
-                                 int mxErr,    /* Stop reporting errors after this many */
-                                 int *pnErr    /* Write number of errors seen to this variable */
+     Btree *p,     /* The btree to be checked */
+     
+     int *aRoot,   /* An array of root pages numbers for individual trees */
+     int nRoot,    /* Number of entries in aRoot[] */
+     
+     int mxErr,    /* Stop reporting errors after this many */
+     int *pnErr    /* Write number of errors seen to this variable */
 );
 
 /*

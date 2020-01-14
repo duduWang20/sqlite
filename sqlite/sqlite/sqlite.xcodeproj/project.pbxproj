@@ -3486,6 +3486,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0D3807DB22C2071F006183B0 /* cache */ = {
+			isa = PBXGroup;
+			children = (
+				D5D08F79210F07BE005F1DA6 /* test_pcache.c */,
+				D5D08F73210F07BE005F1DA6 /* pcache.h */,
+				D5D08FC2210F07BE005F1DA6 /* pcache.c */,
+				D5D08F7E210F07BE005F1DA6 /* pcache1.c */,
+				D5D098752113381B005F1DA6 /* PCache-struct.h */,
+				D5D0988121182FDB005F1DA6 /* PCache1-struct.h */,
+			);
+			path = cache;
+			sourceTree = "<group>";
+		};
 		D5D08A6B210EBBBC005F1DA6 = {
 			isa = PBXGroup;
 			children = (
@@ -5459,13 +5472,8 @@
 		D5D0984C210F0EAC005F1DA6 /* b-pager */ = {
 			isa = PBXGroup;
 			children = (
+				0D3807DB22C2071F006183B0 /* cache */,
 				D5D09855210F24AF005F1DA6 /* log */,
-				D5D08F73210F07BE005F1DA6 /* pcache.h */,
-				D5D08FC2210F07BE005F1DA6 /* pcache.c */,
-				D5D08F7E210F07BE005F1DA6 /* pcache1.c */,
-				D5D098752113381B005F1DA6 /* PCache-struct.h */,
-				D5D0988121182FDB005F1DA6 /* PCache1-struct.h */,
-				D5D08F79210F07BE005F1DA6 /* test_pcache.c */,
 				D5D08FBC210F07BE005F1DA6 /* backup.c */,
 				D5D08FB6210F07BE005F1DA6 /* pager.h */,
 				D5D08F78210F07BE005F1DA6 /* pager.c */,
